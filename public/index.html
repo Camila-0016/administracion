@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventario Inteligente en Altura · MiningTech S.A.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <strong>MiningTech</strong>
+    <span>Inventario Inteligente en Altura</span>
+  </div>
+  <div class="site-status">
+    <i class="pulse" aria-hidden="true"></i>
+    <span>Faena Salar · <span class="msnm">4.000 msnm ·</span> <span id="clock">--:--</span></span>
+  </div>
+</header>
+
+<main>
+  <!-- KPIs -->
+  <section aria-label="Indicadores del almacén">
+    <div class="kpi-grid" id="kpis"></div>
+  </section>
+
+  <!-- Tabla -->
+  <div class="section-head">
+    <h2>Insumos en almacén</h2>
+    <span class="hint">La cobertura se compara contra el lead time del camión a la Puna.</span>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <input id="buscar" type="search" placeholder="Buscar por nombre o SKU" autocomplete="off">
+    </div>
+    <select class="filter" id="filtroCategoria" aria-label="Filtrar por categoría">
+      <option value="">Todas las categorías</option>
+    </select>
+    <div class="chips" id="filtroEstado" role="group" aria-label="Filtrar por criticidad">
+      <button class="chip" data-estado="" aria-pressed="true">Todos</button>
+      <button class="chip" data-estado="CRITICO" aria-pressed="false">Críticos</button>
+      <button class="chip" data-estado="ADVERTENCIA" aria-pressed="false">Advertencia</button>
+      <button class="chip" data-estado="OPERATIVO" aria-pressed="false">Operativos</button>
+    </div>
+    <button class="btn btn-primary" id="btnNuevo">Cargar insumo</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla">
+      <thead>
+        <tr>
+          <th data-sort="nombre">Insumo</th>
+          <th data-sort="categoria">Categoría</th>
+          <th class="num" data-sort="stock_actual">Stock</th>
+          <th class="num" data-sort="stock_minimo">Mínimo</th>
+          <th class="num" data-sort="consumo_diario">Consumo/día</th>
+          <th class="num" data-sort="lead_time_dias">Lead time</th>
+          <th class="num" data-sort="cobertura_dias">Cobertura</th>
+          <th data-sort="estado">Estado</th>
+          <th class="num">Ajuste</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="vacio" hidden>
+      <p>Ningún insumo coincide con estos filtros.</p>
+      <button class="btn btn-ghost" id="btnLimpiar">Quitar filtros</button>
+    </div>
+  </div>
+</main>
+
+<!-- Drawer de detalle -->
+<div class="overlay" id="overlay" hidden></div>
+
+<aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitulo">
+  <div class="drawer-head">
+    <div>
+      <h3 id="drawerTitulo">—</h3>
+      <div class="sub mono" id="drawerSub">—</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn btn-sm" id="btnEditarDrawer">Editar</button>
+      <button class="btn btn-sm btn-ghost" id="btnCerrarDrawer" aria-label="Cerrar detalle">Cerrar</button>
+    </div>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<!-- Modal de alta/edición -->
+<div class="modal" id="modalInsumo" role="dialog" aria-modal="true" aria-labelledby="modalTitulo" hidden>
+  <div class="modal-head">
+    <h3 id="modalTitulo">Cargar insumo</h3>
+    <button class="icon-btn" id="btnCerrarModal" aria-label="Cerrar">×</button>
+  </div>
+  <div class="modal-body">
+    <p class="form-error" id="errorInsumo" hidden></p>
+    <form id="formInsumo" class="form-grid">
+      <input type="hidden" name="registro_id">
+      <div class="field wide">
+        <label for="f-nombre">Nombre del insumo</label>
+        <input id="f-nombre" name="nombre" required placeholder="Filtro de aire de altura — motor CAT 785">
+      </div>
+      <div class="field">
+        <label for="f-sku">Código / SKU</label>
+        <input id="f-sku" name="sku" class="mono" required placeholder="FLT-ALT-2440">
+      </div>
+      <div class="field">
+        <label for="f-categoria">Categoría</label>
+        <input id="f-categoria" name="categoria" list="categoriasList" placeholder="Filtros y elementos">
+        <datalist id="categoriasList"></datalist>
+      </div>
+      <div class="field">
+        <label for="f-unidad">Unidad de medida</label>
+        <select id="f-unidad" name="unidad">
+          <option>unidades</option><option>kg</option><option>L</option>
+          <option>m</option><option>m³</option><option>cajas</option><option>pares</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-stock">Stock actual</label>
+        <input id="f-stock" name="stock_actual" class="mono" type="number" min="0" step="0.01" value="0">
+      </div>
+      <div class="field">
+        <label for="f-minimo">Stock de seguridad</label>
+        <input id="f-minimo" name="stock_minimo" class="mono" type="number" min="0" step="0.01" value="0">
+        <span class="help">Colchón que no se toca salvo emergencia.</span>
+      </div>
+      <div class="field">
+        <label for="f-consumo">Consumo diario estimado</label>
+        <input id="f-consumo" name="consumo_diario" class="mono" type="number" min="0" step="0.01" value="0">
+      </div>
+      <div class="field wide">
+        <label for="f-lead">Lead time de transporte (días)</label>
+        <input id="f-lead" name="lead_time_dias" class="mono" type="number" min="0" step="1" value="7">
+        <span class="help">Días que tarda el camión en subir desde el centro de distribución.</span>
+      </div>
+    </form>
+  </div>
+  <div class="modal-foot">
+    <button class="btn btn-danger" id="btnEliminar" hidden>Eliminar</button>
+    <button class="btn btn-ghost" id="btnCancelarInsumo">Cancelar</button>
+    <button class="btn btn-primary" id="btnGuardarInsumo">Guardar insumo</button>
+  </div>
+</div>
+
+<!-- Modal de movimiento -->
+<div class="modal" id="modalMov" role="dialog" aria-modal="true" aria-labelledby="modalMovTitulo" hidden>
+  <div class="modal-head">
+    <h3 id="modalMovTitulo">Registrar movimiento</h3>
+    <button class="icon-btn" id="btnCerrarMov" aria-label="Cerrar">×</button>
+  </div>
+  <div class="modal-body">
+    <p class="form-error" id="errorMov" hidden></p>
+    <form id="formMov" class="form-grid">
+      <input type="hidden" name="insumo_id">
+      <div class="field wide">
+        <label>Tipo de movimiento</label>
+        <div class="seg" id="segTipo">
+          <button type="button" data-tipo="ENTRADA" aria-pressed="true">+ Entrada</button>
+          <button type="button" data-tipo="SALIDA" aria-pressed="false">− Salida</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="m-cantidad">Cantidad</label>
+        <input id="m-cantidad" name="cantidad" class="mono" type="number" min="0.01" step="0.01" required>
+      </div>
+      <div class="field">
+        <label for="m-responsable">Responsable</label>
+        <input id="m-responsable" name="responsable" placeholder="M. Quispe (Pañol)" required>
+      </div>
+      <div class="field wide">
+        <label for="m-motivo">Motivo</label>
+        <input id="m-motivo" name="motivo" list="motivosList" placeholder="Consumo diario">
+        <datalist id="motivosList">
+          <option>Consumo diario</option>
+          <option>Mantenimiento preventivo</option>
+          <option>Reemplazo correctivo</option>
+          <option>Ingreso por remito</option>
+          <option>Devolución a pañol</option>
+          <option>Ajuste por inventario físico</option>
+        </datalist>
+      </div>
+    </form>
+  </div>
+  <div class="modal-foot">
+    <button class="btn btn-ghost" id="btnCancelarMov">Cancelar</button>
+    <button class="btn btn-primary" id="btnGuardarMov">Registrar movimiento</button>
+  </div>
+</div>
+
+<div class="toast-stack" id="toasts" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="./js/api.js"></script>
+<script src="./js/charts.js"></script>
+<script src="./js/app.js"></script>
+</body>
+</html>
