@@ -62,14 +62,30 @@ routes/
   insumos.js              /api/insumos/*
   movimientos.js          /api/movimientos
 public/
-  index.html              HTML semántico
+  index.html              HTML semántico — sidebar + 5 vistas (SPA con display:none/block)
   css/styles.css          Tema oscuro slate con acentos cian/teal
   js/api.js               Cliente REST
   js/charts.js            Configuración de Chart.js
-  js/app.js               Controlador de tabla, filtros, drawer y modales
+  js/app.js               Controlador del Tablero General: tabla, filtros, drawer y modales
+  js/views.js             Router del sidebar: Movimientos, Alertas, Logística, Reportes/Config
   js/store-local.js       Persistencia en LocalStorage (sólo para la demo sin servidor)
 build-demo.js             Empaqueta todo en demo-standalone.html
 ```
+
+### Navegación (sidebar)
+
+`public/js/views.js` alterna 5 vistas dentro de la misma página, sin recargar:
+
+| Vista | Contenido |
+|---|---|
+| **Tablero General** | KPIs, tabla completa y drawer de detalle (sin cambios respecto a antes) |
+| **Registro de Movimientos** | Últimos 50 asientos de toda la faena, vía `GET /api/movimientos` |
+| **Alertas de Reorden** | Tarjetas de insumos Crítico/Advertencia con barra cobertura vs. lead time y botón "Generar orden de compra" (confirmación visual — no hay todavía un módulo de compras en el backend) |
+| **Logística** | Simulación de 4 camiones en tránsito; la etapa del viaje se calcula a partir de la relación cobertura/lead-time de cada insumo, no es un dato reservado en la base |
+| **Reportes / Configuración** | Placeholder informativo: "disponible para el entregable de Noviembre" |
+
+Las vistas de Alertas y Logística se refrescan solas cuando se registra un movimiento desde el Tablero (evento `inventario:actualizado`), así que nunca muestran datos viejos si se navega entre pantallas.
+
 
 Las reglas de cálculo viven en `services/inventario.js` y están replicadas de forma idéntica en
 `public/js/store-local.js`, para que la demo sin servidor dé exactamente los mismos números.

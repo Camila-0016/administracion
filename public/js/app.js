@@ -28,7 +28,9 @@
   const num = (v) => (v === null || v === undefined ? '—' : nf.format(v));
   const fechaCorta = (iso) => {
     if (!iso) return '—';
-    const d = new Date(iso.replace(' ', 'T'));
+    // El backend guarda las fechas en UTC sin indicador de zona ("YYYY-MM-DD HH:MM:SS").
+    // Sin la "Z", el navegador las interpretaría como si ya fueran hora local.
+    const d = new Date(iso.replace(' ', 'T') + 'Z');
     return d.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
   };
   const fechaLarga = (iso) => (iso
@@ -159,6 +161,9 @@
     renderTabla();
     await renderKpis();
     await renderCategorias();
+    // Otras vistas (Alertas, Logística) escuchan este evento para no quedar desactualizadas
+    // cuando se registra un movimiento o se edita un insumo desde el Tablero.
+    window.dispatchEvent(new CustomEvent('inventario:actualizado', { detail: { insumos: estado.insumos } }));
   }
 
   async function renderCategorias() {
@@ -175,7 +180,8 @@
 
   async function abrirDetalle(id) {
     estado.detalleId = id;
-    const [serie, historial] = await Promise.all([API.serie(id), API.historial(id)]);
+    const dias = window.Config ? window.Config.diasHistorial() : 30;
+    const [serie, historial] = await Promise.all([API.serie(id, dias), API.historial(id)]);
     const i = serie.insumo;
     const e = ESTADOS[i.estado];
 
@@ -192,7 +198,7 @@
       </div>
 
       <div class="chart-card">
-        <h4>Nivel de stock, últimos 30 días</h4>
+        <h4>Nivel de stock, últimos ${dias} días</h4>
         <p class="cap">La línea punteada cian proyecta el stock si el consumo se mantiene igual.</p>
         <div class="chart-box"><canvas id="chartEvolucion"></canvas></div>
       </div>
@@ -436,6 +442,12 @@
       else if (!$('#modalInsumo').hidden) cerrarModalInsumo();
       else cerrarDrawer();
     });
+
+    // Chart.js no repinta solo con el CSS: si cambia el tema y el drawer de
+    // detalle está abierto, hay que reconstruir sus gráficos con los colores nuevos.
+    window.addEventListener('config:actualizada', () => {
+      if (estado.detalleId) abrirDetalle(estado.detalleId);
+    });
   }
 
   function reloj() {
@@ -446,10 +458,61 @@
     setInterval(tick, 30000);
   }
 
+  /** Permite ampliar el drawer de detalle arrastrando su borde izquierdo. */
+  function conectarResizeDrawer() {
+    const resizer = $('#drawerResizer');
+    const drawer = $('#drawer');
+    if (!resizer || !drawer) return;
+
+    const ANCHO_MIN = 340;
+    const anchoMax = () => Math.round(window.innerWidth * 0.92);
+    let arrastrando = false;
+
+    function aplicarAncho(clientX) {
+      const nuevo = Math.min(anchoMax(), Math.max(ANCHO_MIN, window.innerWidth - clientX));
+      drawer.style.width = `${nuevo}px`;
+    }
+
+    function iniciarArrastre() {
+      arrastrando = true;
+      document.body.classList.add('resizing-drawer');
+    }
+
+    function detenerArrastre() {
+      if (!arrastrando) return;
+      arrastrando = false;
+      document.body.classList.remove('resizing-drawer');
+    }
+
+    resizer.addEventListener('mousedown', (e) => { iniciarArrastre(); e.preventDefault(); });
+    resizer.addEventListener('touchstart', iniciarArrastre, { passive: true });
+
+    document.addEventListener('mousemove', (e) => { if (arrastrando) aplicarAncho(e.clientX); });
+    document.addEventListener('touchmove', (e) => {
+      if (arrastrando && e.touches[0]) aplicarAncho(e.touches[0].clientX);
+    }, { passive: true });
+
+    document.addEventListener('mouseup', detenerArrastre);
+    document.addEventListener('touchend', detenerArrastre);
+
+    // Accesibilidad: ← / → también amplían o reducen el panel con el resizer enfocado.
+    resizer.addEventListener('keydown', (e) => {
+      const actual = drawer.getBoundingClientRect().width;
+      if (e.key === 'ArrowLeft') {
+        drawer.style.width = `${Math.min(anchoMax(), actual + 24)}px`;
+        e.preventDefault();
+      } else if (e.key === 'ArrowRight') {
+        drawer.style.width = `${Math.max(ANCHO_MIN, actual - 24)}px`;
+        e.preventDefault();
+      }
+    });
+  }
+
   // ---------- Arranque ----------
 
   (async function iniciar() {
     conectarEventos();
+    conectarResizeDrawer();
     reloj();
     try {
       await recargar();

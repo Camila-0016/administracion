@@ -33,8 +33,16 @@ html = html.replace(
   () => `<script>\n${read('js/charts.js')}\n</script>`,
 );
 html = html.replace(
+  '<script src="./js/config.js"></script>',
+  () => `<script>\n${read('js/config.js')}\n</script>`,
+);
+html = html.replace(
   '<script src="./js/app.js"></script>',
   () => `<script>\n${read('js/app.js')}\n</script>`,
+);
+html = html.replace(
+  '<script src="./js/views.js"></script>',
+  () => `<script>\n${read('js/views.js')}\n</script>`,
 );
 
 // 4. Acciones exclusivas de la demo

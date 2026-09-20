@@ -29,5 +29,6 @@ window.API = (() => {
     historial:   (id)          => req(`/insumos/${id}/historial`),
     serie:       (id, d = 30)  => req(`/insumos/${id}/serie?dias=${d}`),
     movimiento:  (body)        => req('/movimientos', { method: 'POST', body: JSON.stringify(body) }),
+    movimientos: (limite = 50) => req(`/movimientos?limite=${limite}`),
   };
 })();

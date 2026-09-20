@@ -36,7 +36,7 @@ const INSUMOS = [
   {
     sku: 'REA-CAR-0880', nombre: 'Carbonato de sodio (soda solvay densa)',
     categoria: 'Reactivos químicos', unidad: 'kg',
-    stock_minimo: 2000, consumo_diario: 610, lead_time_dias: 8, deseado: 4200, // Crítico
+    stock_minimo: 2000, consumo_diario: 610, lead_time_dias: 8, deseado: 4200,
   },
   {
     sku: 'REA-ACD-1800', nombre: 'Ácido clorhídrico 33% (desincrustante)',
@@ -56,7 +56,7 @@ const INSUMOS = [
   {
     sku: 'LAB-RCT-0010', nombre: 'Kits titulación de litio y magnesio',
     categoria: 'Laboratorio de control', unidad: 'kits',
-    stock_minimo: 15, consumo_diario: 1.8, lead_time_dias: 15, deseado: 22, // Advertencia
+    stock_minimo: 15, consumo_diario: 1.8, lead_time_dias: 15, deseado: 22,
   },
 
   // --- EQUIPOS DE PROCESO Y MEMBRANAS ---
@@ -68,7 +68,7 @@ const INSUMOS = [
   {
     sku: 'REP-MEM-0040', nombre: 'Membrana de ósmosis inversa 8" (salmuera)',
     categoria: 'Equipos de proceso', unidad: 'unidades',
-    stock_minimo: 4, consumo_diario: 0.35, lead_time_dias: 25, deseado: 5, // Crítico
+    stock_minimo: 4, consumo_diario: 0.35, lead_time_dias: 25, deseado: 5,
   },
   {
     sku: 'VLV-MAR-0150', nombre: 'Válvula mariposa PTFE 6" para salmuera ácida',
@@ -83,14 +83,14 @@ const INSUMOS = [
   {
     sku: 'SDR-LIT-0004', nombre: 'Sondas de nivel ultrasónicas para pozos',
     categoria: 'Equipos de proceso', unidad: 'unidades',
-    stock_minimo: 2, consumo_diario: 0.08, lead_time_dias: 30, deseado: 3, // Advertencia
+    stock_minimo: 2, consumo_diario: 0.08, lead_time_dias: 30, deseado: 3,
   },
 
   // --- FILTROS Y ELEMENTOS DE ALTURA ---
   {
     sku: 'FLT-ALT-2440', nombre: 'Filtro de aire de altura — motor CAT 785',
     categoria: 'Filtros y elementos', unidad: 'unidades',
-    stock_minimo: 12, consumo_diario: 2.4, lead_time_dias: 7, deseado: 14, // Crítico
+    stock_minimo: 12, consumo_diario: 2.4, lead_time_dias: 7, deseado: 14,
   },
   {
     sku: 'FLT-SEP-0500', nombre: 'Filtro separador de agua/combustible Racor',
@@ -127,7 +127,7 @@ const INSUMOS = [
   {
     sku: 'ROD-CAR-0127', nombre: 'Rodillos de carga artesonados Ø127 mm',
     categoria: 'Repuestos de cintas', unidad: 'unidades',
-    stock_minimo: 30, consumo_diario: 5.2, lead_time_dias: 15, deseado: 75, // Advertencia
+    stock_minimo: 30, consumo_diario: 5.2, lead_time_dias: 15, deseado: 75,
   },
 
   // --- COMBUSTIBLES, ENERGÍA Y LUBRICANTES ---
@@ -149,7 +149,7 @@ const INSUMOS = [
   {
     sku: 'LUB-MOT-1540', nombre: 'Aceite para motor 15W40 API CK-4 sintético',
     categoria: 'Lubricantes', unidad: 'L',
-    stock_minimo: 800, consumo_diario: 160, lead_time_dias: 8, deseado: 1950, // Advertencia
+    stock_minimo: 800, consumo_diario: 160, lead_time_dias: 8, deseado: 1950,
   },
   {
     sku: 'LUB-GRS-0002', nombre: 'Grasa litio EP-2 para rodamientos en baja temp.',
@@ -181,7 +181,7 @@ const INSUMOS = [
   {
     sku: 'EPP-PAR-0004', nombre: 'Parkas térmicas alta visibilidad -25°C',
     categoria: 'Salud ocupacional', unidad: 'unidades',
-    stock_minimo: 12, consumo_diario: 0.5, lead_time_dias: 15, deseado: 16, // Crítico
+    stock_minimo: 12, consumo_diario: 0.5, lead_time_dias: 15, deseado: 16,
   },
   {
     sku: 'EPP-LEN-UV40', nombre: 'Anteojos de seguridad polarizados UV400 (salar)',
@@ -213,7 +213,7 @@ const INSUMOS = [
   {
     sku: 'TUB-PAD-0110', nombre: 'Caño PEAD PN10 Ø110 mm para transporte de salmuera',
     categoria: 'Ferretería industrial', unidad: 'm',
-    stock_minimo: 120, consumo_diario: 12.0, lead_time_dias: 25, deseado: 210, // Crítico
+    stock_minimo: 120, consumo_diario: 12.0, lead_time_dias: 25, deseado: 210,
   },
 ];
 

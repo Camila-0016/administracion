@@ -4,6 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Inventario Inteligente en Altura · MiningTech S.A.</title>
+  <script>
+    // Aplica el tema guardado ANTES de pintar, para que no haya un parpadeo
+    // oscuro→claro al cargar. Ver public/js/config.js para la lógica completa.
+    (function () {
+      try {
+        var raw = localStorage.getItem('miningtech.config.v1');
+        var tema = raw ? (JSON.parse(raw).tema || 'dark') : 'dark';
+        document.documentElement.setAttribute('data-theme', tema);
+      } catch (_) { /* sin localStorage: se queda con el tema oscuro por defecto */ }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -11,73 +22,278 @@
 </head>
 <body>
 
-<header class="topbar">
-  <div class="brand">
-    <strong>MiningTech</strong>
-    <span>Inventario Inteligente en Altura</span>
-  </div>
-  <div class="site-status">
-    <i class="pulse" aria-hidden="true"></i>
-    <span>Faena Salar · <span class="msnm">4.000 msnm ·</span> <span id="clock">--:--</span></span>
-  </div>
-</header>
+<div class="app-shell">
 
-<main>
-  <!-- KPIs -->
-  <section aria-label="Indicadores del almacén">
-    <div class="kpi-grid" id="kpis"></div>
-  </section>
-
-  <!-- Tabla -->
-  <div class="section-head">
-    <h2>Insumos en almacén</h2>
-    <span class="hint">La cobertura se compara contra el lead time del camión a la Puna.</span>
-  </div>
-
-  <div class="toolbar">
-    <div class="search">
-      <input id="buscar" type="search" placeholder="Buscar por nombre o SKU" autocomplete="off">
+  <nav class="sidebar" aria-label="Navegación principal">
+    <div class="side-brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="1" y="1" width="30" height="30" rx="8"/>
+        <path class="brand-mark-peak" d="M6 22.5 12.5 11l4 6.2 2.6-3.8L26 22.5Z"/>
+        <circle class="brand-mark-node" cx="21.5" cy="9.5" r="1.7"/>
+      </svg>
+      <div class="side-brand-text">
+        <strong>MiningTech</strong>
+        <span>Almacén de altura</span>
+      </div>
     </div>
-    <select class="filter" id="filtroCategoria" aria-label="Filtrar por categoría">
-      <option value="">Todas las categorías</option>
-    </select>
-    <div class="chips" id="filtroEstado" role="group" aria-label="Filtrar por criticidad">
-      <button class="chip" data-estado="" aria-pressed="true">Todos</button>
-      <button class="chip" data-estado="CRITICO" aria-pressed="false">Críticos</button>
-      <button class="chip" data-estado="ADVERTENCIA" aria-pressed="false">Advertencia</button>
-      <button class="chip" data-estado="OPERATIVO" aria-pressed="false">Operativos</button>
-    </div>
-    <button class="btn btn-primary" id="btnNuevo">Cargar insumo</button>
-  </div>
 
-  <div class="table-wrap">
-    <table id="tabla">
-      <thead>
-        <tr>
-          <th data-sort="nombre">Insumo</th>
-          <th data-sort="categoria">Categoría</th>
-          <th class="num" data-sort="stock_actual">Stock</th>
-          <th class="num" data-sort="stock_minimo">Mínimo</th>
-          <th class="num" data-sort="consumo_diario">Consumo/día</th>
-          <th class="num" data-sort="lead_time_dias">Lead time</th>
-          <th class="num" data-sort="cobertura_dias">Cobertura</th>
-          <th data-sort="estado">Estado</th>
-          <th class="num">Ajuste</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <div class="empty" id="vacio" hidden>
-      <p>Ningún insumo coincide con estos filtros.</p>
-      <button class="btn btn-ghost" id="btnLimpiar">Quitar filtros</button>
-    </div>
+    <ul class="nav-list" id="navList">
+      <li>
+        <button class="nav-item" data-view="tablero" data-title="Tablero General" aria-current="page">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.2"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.2"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.2"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.2"/></svg>
+          <span>Tablero General</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-item" data-view="movimientos" data-title="Registro de Movimientos">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 5h12M4 10h12M4 15h8"/></svg>
+          <span>Registro de Movimientos</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-item" data-view="alertas" data-title="Alertas de Reorden">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3 2.5 16.5h15L10 3Z"/><path d="M10 8.2v3.6"/><circle cx="10" cy="14.2" r="0.9" fill="currentColor" stroke="none"/></svg>
+          <span>Alertas de Reorden</span>
+          <span class="nav-badge" id="badgeAlertas" hidden>0</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-item" data-view="logistica" data-title="Logística y Camiones en Tránsito">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2" y="6" width="9" height="7"/><path d="M11 8.5h3.5L17 11v2h-6z"/><circle cx="6" cy="15" r="1.3"/><circle cx="14.5" cy="15" r="1.3"/></svg>
+          <span>Logística</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-item" data-view="reportes" data-title="Reportes">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 2.5h6L15.5 6v11.5h-10z"/><path d="M8 10h4M8 13h4"/></svg>
+          <span>Reportes</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-item" data-view="configuracion" data-title="Configuración">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="2.6"/><path d="M10 3.5v1.6M10 14.9v1.6M16.5 10h-1.6M5.1 10H3.5M14.6 5.4l-1.1 1.1M6.5 13.5l-1.1 1.1M14.6 14.6l-1.1-1.1M6.5 6.5 5.4 5.4"/></svg>
+          <span>Configuración</span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="side-foot mono">Comisión faena · Salar</div>
+  </nav>
+
+  <div class="content-wrap">
+    <header class="topbar">
+      <h1 id="pageTitle">Tablero General</h1>
+      <div class="site-status">
+        <i class="pulse" aria-hidden="true"></i>
+        <span><span id="faenaNombre">Faena Salar</span> · <span class="msnm"><span id="faenaAltitud">4.000 msnm</span> ·</span> <span id="clock">--:--</span></span>
+        <button class="theme-toggle" id="btnTema" type="button" aria-label="Cambiar a modo claro" title="Cambiar tema">
+          <svg id="iconoSol" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="3.4"/><path d="M10 2.5v2M10 15.5v2M17.5 10h-2M4.5 10h-2M15.3 4.7l-1.4 1.4M6.1 13.9l-1.4 1.4M15.3 15.3l-1.4-1.4M6.1 6.1 4.7 4.7"/></svg>
+          <svg id="iconoLuna" viewBox="0 0 20 20" fill="none" aria-hidden="true" hidden><path d="M16.5 12.2A6.8 6.8 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- ============ Vista 1: Tablero General ============ -->
+      <section id="view-tablero" class="view">
+        <section aria-label="Indicadores del almacén">
+          <div class="kpi-grid" id="kpis"></div>
+        </section>
+
+        <div class="section-head">
+          <h2>Insumos en almacén</h2>
+          <span class="hint">La cobertura se compara contra el lead time del camión a la Puna.</span>
+        </div>
+
+        <div class="toolbar">
+          <div class="search">
+            <input id="buscar" type="search" placeholder="Buscar por nombre o SKU" autocomplete="off">
+          </div>
+          <select class="filter" id="filtroCategoria" aria-label="Filtrar por categoría">
+            <option value="">Todas las categorías</option>
+          </select>
+          <div class="chips" id="filtroEstado" role="group" aria-label="Filtrar por criticidad">
+            <button class="chip" data-estado="" aria-pressed="true">Todos</button>
+            <button class="chip" data-estado="CRITICO" aria-pressed="false">Críticos</button>
+            <button class="chip" data-estado="ADVERTENCIA" aria-pressed="false">Advertencia</button>
+            <button class="chip" data-estado="OPERATIVO" aria-pressed="false">Operativos</button>
+          </div>
+          <button class="btn btn-primary" id="btnNuevo">Cargar insumo</button>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tabla">
+            <thead>
+              <tr>
+                <th data-sort="nombre">Insumo</th>
+                <th data-sort="categoria">Categoría</th>
+                <th class="num" data-sort="stock_actual">Stock</th>
+                <th class="num" data-sort="stock_minimo">Mínimo</th>
+                <th class="num" data-sort="consumo_diario">Consumo/día</th>
+                <th class="num" data-sort="lead_time_dias">Lead time</th>
+                <th class="num" data-sort="cobertura_dias">Cobertura</th>
+                <th data-sort="estado">Estado</th>
+                <th class="num">Ajuste</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div class="empty" id="vacio" hidden>
+            <p>Ningún insumo coincide con estos filtros.</p>
+            <button class="btn btn-ghost" id="btnLimpiar">Quitar filtros</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Vista 2: Registro de Movimientos ============ -->
+      <section id="view-movimientos" class="view" hidden>
+        <div class="section-head">
+          <h2>Registro de movimientos</h2>
+          <span class="hint">Últimos 50 asientos de entrada y salida de toda la faena.</span>
+          <button class="btn btn-sm btn-ghost" id="btnRefrescarMov" style="margin-left:auto">Actualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table class="hist-table" id="tablaMovimientos">
+            <thead>
+              <tr>
+                <th>Fecha y hora</th>
+                <th>Insumo</th>
+                <th>Tipo</th>
+                <th class="num">Cantidad</th>
+                <th>Responsable</th>
+                <th>Motivo</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyMovimientos"></tbody>
+          </table>
+          <div class="empty" id="vacioMovimientos" hidden><p>Todavía no hay movimientos registrados.</p></div>
+        </div>
+      </section>
+
+      <!-- ============ Vista 3: Alertas de Reorden ============ -->
+      <section id="view-alertas" class="view" hidden>
+        <div class="section-head">
+          <h2>Alertas de reorden</h2>
+          <span class="hint">Insumos en Crítico o Advertencia — la cobertura se agota antes de lo cómodo.</span>
+        </div>
+        <div class="alert-grid" id="alertGrid"></div>
+        <div class="empty" id="vacioAlertas" hidden>
+          <p>No hay insumos en estado crítico ni de advertencia en este momento.</p>
+        </div>
+      </section>
+
+      <!-- ============ Vista 4: Logística y camiones en tránsito ============ -->
+      <section id="view-logistica" class="view" hidden>
+        <div class="section-head">
+          <h2>Logística y camiones en tránsito</h2>
+          <span class="hint">Simulación operativa del trayecto desde el centro de distribución hasta la faena.</span>
+        </div>
+        <div class="truck-grid" id="truckGrid"></div>
+        <div class="empty" id="vacioLogistica" hidden>
+          <p>No hay despachos pendientes: todos los insumos están dentro de su cobertura normal.</p>
+        </div>
+      </section>
+
+      <!-- ============ Vista 5: Reportes ============ -->
+      <section id="view-reportes" class="view" hidden>
+        <div class="section-head">
+          <h2>Reportes</h2>
+          <span class="hint">Análisis agregado del catálogo actual — se recalcula al abrir esta pantalla.</span>
+          <button class="btn btn-sm btn-ghost" id="btnRefrescarReportes" style="margin-left:auto">Actualizar</button>
+          <button class="btn btn-sm btn-primary" id="btnExportarReporte">Exportar CSV</button>
+        </div>
+
+        <div class="kpi-grid" id="reportKpis"></div>
+
+        <div class="report-grid">
+          <div class="chart-card">
+            <h4>Insumos por categoría</h4>
+            <p class="cap">Cuántos insumos del catálogo pertenecen a cada categoría.</p>
+            <div class="chart-box"><canvas id="chartCategorias"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h4>Insumos por estado</h4>
+            <p class="cap">Distribución actual del catálogo según su criticidad.</p>
+            <div class="chart-box"><canvas id="chartEstados"></canvas></div>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h2>Insumos con menor margen</h2>
+          <span class="hint">Ordenados por cobertura relativa al lead time — arriba, los que menos margen tienen.</span>
+        </div>
+        <div class="table-wrap">
+          <table class="hist-table" id="tablaPrioridad">
+            <thead>
+              <tr>
+                <th>Insumo</th>
+                <th>Categoría</th>
+                <th class="num">Cobertura</th>
+                <th class="num">Lead time</th>
+                <th class="num">Margen relativo</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyPrioridad"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ Vista 6: Configuración ============ -->
+      <section id="view-configuracion" class="view" hidden>
+        <div class="section-head">
+          <h2>Configuración</h2>
+          <span class="hint">Los cambios se guardan en este navegador y se aplican de inmediato.</span>
+        </div>
+
+        <div class="config-grid">
+          <div class="config-card">
+            <h3>Datos de la faena</h3>
+            <p class="cap">Se muestran en la cabecera de todas las pantallas.</p>
+            <div class="field">
+              <label for="cfg-nombre">Nombre de la faena</label>
+              <input id="cfg-nombre" type="text" maxlength="40" placeholder="Faena Salar">
+            </div>
+            <div class="field">
+              <label for="cfg-altitud">Altitud (msnm)</label>
+              <input id="cfg-altitud" type="number" min="0" step="1" class="mono" placeholder="4000">
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnGuardarFaena" style="align-self:flex-start">Guardar</button>
+          </div>
+
+          <div class="config-card">
+            <h3>Historial en gráficas de detalle</h3>
+            <p class="cap">Cuántos días hacia atrás se muestran al abrir el detalle de un insumo, en el Tablero General.</p>
+            <div class="field">
+              <label for="cfg-dias">Días de historial</label>
+              <input id="cfg-dias" type="number" min="7" max="90" step="1" class="mono" value="30">
+              <span class="help">Entre 7 y 90 días.</span>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnGuardarDias" style="align-self:flex-start">Guardar</button>
+          </div>
+
+          <div class="config-card config-card-wide">
+            <h3>Responsables frecuentes</h3>
+            <p class="cap">Aparecen como sugerencia al registrar un movimiento de entrada o salida.</p>
+            <div class="chips" id="responsablesChips"></div>
+            <div class="config-add-row">
+              <input id="cfg-nuevo-responsable" type="text" placeholder="Agregar responsable (ej. M. Quispe — Pañol)">
+              <button class="btn btn-sm" id="btnAgregarResponsable">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
-</main>
+</div>
 
 <!-- Drawer de detalle -->
 <div class="overlay" id="overlay" hidden></div>
 
 <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitulo">
+  <div class="drawer-resizer" id="drawerResizer" role="separator" aria-orientation="vertical" aria-label="Arrastrar para ampliar el panel" tabindex="0"></div>
   <div class="drawer-head">
     <div>
       <h3 id="drawerTitulo">—</h3>
@@ -171,7 +387,8 @@
       </div>
       <div class="field">
         <label for="m-responsable">Responsable</label>
-        <input id="m-responsable" name="responsable" placeholder="M. Quispe (Pañol)" required>
+        <input id="m-responsable" name="responsable" list="responsablesList" placeholder="M. Quispe (Pañol)" required>
+        <datalist id="responsablesList"></datalist>
       </div>
       <div class="field wide">
         <label for="m-motivo">Motivo</label>
@@ -198,6 +415,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="./js/api.js"></script>
 <script src="./js/charts.js"></script>
+<script src="./js/config.js"></script>
 <script src="./js/app.js"></script>
+<script src="./js/views.js"></script>
 </body>
 </html>
