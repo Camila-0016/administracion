@@ -173,7 +173,12 @@
     sel.innerHTML = '<option value="">Todas las categorías</option>'
       + cats.map((c) => `<option>${c}</option>`).join('');
     sel.value = actual;
-    $('#categoriasList').innerHTML = cats.map((c) => `<option>${c}</option>`).join('');
+
+    // El datalist del alta/edición suma las categorías configuradas en
+    // Configuración, así se sugieren aunque todavía ningún insumo las use.
+    const configuradas = window.Config ? window.Config.get().categorias : [];
+    const combinadas = [...new Set([...cats, ...configuradas])].sort((a, b) => a.localeCompare(b, 'es'));
+    $('#categoriasList').innerHTML = combinadas.map((c) => `<option>${c}</option>`).join('');
   }
 
   // ---------- Drawer de detalle ----------
@@ -445,8 +450,12 @@
 
     // Chart.js no repinta solo con el CSS: si cambia el tema y el drawer de
     // detalle está abierto, hay que reconstruir sus gráficos con los colores nuevos.
+    // También hay que re-mezclar el datalist de categorías (real + configuradas)
+    // y releer el intervalo de actualización automática por si cambió.
     window.addEventListener('config:actualizada', () => {
       if (estado.detalleId) abrirDetalle(estado.detalleId);
+      renderCategorias();
+      configurarAutoRefresh(window.Config.get().autoRefreshSegundos);
     });
   }
 
@@ -508,12 +517,28 @@
     });
   }
 
+  /** Refresca el inventario solo cada tantos segundos (0 = desactivado).
+   *  Se salta el ciclo si hay un modal abierto, para no interrumpir una carga en curso. */
+  let intervaloAutoRefresh = null;
+  function configurarAutoRefresh(segundos) {
+    if (intervaloAutoRefresh) {
+      clearInterval(intervaloAutoRefresh);
+      intervaloAutoRefresh = null;
+    }
+    if (segundos > 0) {
+      intervaloAutoRefresh = setInterval(() => {
+        if ($('#modalInsumo').hidden && $('#modalMov').hidden) recargar();
+      }, segundos * 1000);
+    }
+  }
+
   // ---------- Arranque ----------
 
   (async function iniciar() {
     conectarEventos();
     conectarResizeDrawer();
     reloj();
+    configurarAutoRefresh(window.Config ? window.Config.get().autoRefreshSegundos : 0);
     try {
       await recargar();
     } catch (err) {

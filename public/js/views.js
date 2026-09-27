@@ -1,9 +1,3 @@
-/* ==========================================================
-   Navegación del sidebar — alterna vistas dentro de la SPA
-   sin recargar la página (display: none / block) y sin tocar
-   el controlador del Tablero General (app.js) ni las gráficas
-   del drawer de detalle (charts.js).
-   ========================================================== */
 (() => {
   'use strict';
 
@@ -226,10 +220,11 @@
   async function cargarLogistica() {
     try {
       const insumos = await API.insumos();
+      const cantidad = Config.camionesLogistica();
       const enTransito = insumos
         .filter((i) => i.consumo_diario > 0 && i.lead_time_dias > 0)
         .sort((a, b) => (a.cobertura_dias / a.lead_time_dias) - (b.cobertura_dias / b.lead_time_dias))
-        .slice(0, 4);
+        .slice(0, cantidad);
 
       $('#vacioLogistica').hidden = enTransito.length > 0;
       $('#truckGrid').innerHTML = enTransito
@@ -419,12 +414,20 @@
 
   // ---------- Vista: Configuración ----------
 
-  function renderResponsablesChips(cfg) {
-    $('#responsablesChips').innerHTML = cfg.responsables.map((r) => `
+  /** Las tres listas "frecuentes" (responsables, motivos, categorías) comparten
+   *  el mismo patrón de chips removibles, así que usan un único renderer. */
+  function renderChipsFrecuentes(contenedorId, valores, vacioTexto) {
+    $(`#${contenedorId}`).innerHTML = valores.map((v) => `
       <span class="chip chip-removable">
-        ${r}
-        <button type="button" data-quitar="${r}" aria-label="Quitar ${r}">×</button>
-      </span>`).join('') || '<span class="hint">Todavía no cargaste responsables frecuentes.</span>';
+        ${v}
+        <button type="button" data-quitar="${v}" aria-label="Quitar ${v}">×</button>
+      </span>`).join('') || `<span class="hint">${vacioTexto}</span>`;
+  }
+
+  function renderTodosLosChips(cfg) {
+    renderChipsFrecuentes('responsablesChips', cfg.responsables, 'Todavía no cargaste responsables frecuentes.');
+    renderChipsFrecuentes('motivosChips', cfg.motivos, 'Todavía no cargaste motivos frecuentes.');
+    renderChipsFrecuentes('categoriasChips', cfg.categorias, 'Todavía no cargaste categorías frecuentes.');
   }
 
   function cargarConfiguracion() {
@@ -432,7 +435,9 @@
     $('#cfg-nombre').value = cfg.faenaNombre;
     $('#cfg-altitud').value = cfg.faenaAltitud;
     $('#cfg-dias').value = cfg.diasHistorial;
-    renderResponsablesChips(cfg);
+    $('#cfg-camiones').value = cfg.camionesLogistica;
+    $('#cfg-auto').value = String(cfg.autoRefreshSegundos);
+    renderTodosLosChips(cfg);
   }
 
   // ---------- Eventos ----------
@@ -440,6 +445,28 @@
   function conectarEventosReportes() {
     $('#btnRefrescarReportes').addEventListener('click', cargarReportes);
     $('#btnExportarReporte').addEventListener('click', () => exportarCSV(ultimosInsumosReporte));
+  }
+
+  /** Conecta el input + botón "Agregar" y el click de "quitar" de una lista frecuente. */
+  function conectarListaFrecuente({ inputId, btnAgregarId, chipsId, agregar, quitar }) {
+    $(`#${btnAgregarId}`).addEventListener('click', () => {
+      const input = $(`#${inputId}`);
+      if (!input.value.trim()) return;
+      const cfg = agregar(input.value);
+      input.value = '';
+      renderTodosLosChips(cfg);
+    });
+
+    $(`#${inputId}`).addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); $(`#${btnAgregarId}`).click(); }
+    });
+
+    $(`#${chipsId}`).addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-quitar]');
+      if (!btn) return;
+      const cfg = quitar(btn.dataset.quitar);
+      renderTodosLosChips(cfg);
+    });
   }
 
   function conectarEventosConfiguracion() {
@@ -457,23 +484,30 @@
       toast(`Las gráficas de detalle ahora muestran ${dias} días.`);
     });
 
-    $('#btnAgregarResponsable').addEventListener('click', () => {
-      const input = $('#cfg-nuevo-responsable');
-      if (!input.value.trim()) return;
-      const cfg = Config.agregarResponsable(input.value);
-      input.value = '';
-      renderResponsablesChips(cfg);
+    $('#btnGuardarCamiones').addEventListener('click', () => {
+      const cantidad = Math.min(8, Math.max(2, Number($('#cfg-camiones').value) || 4));
+      $('#cfg-camiones').value = cantidad;
+      Config.set({ camionesLogistica: cantidad });
+      toast(`Logística ahora muestra ${cantidad} camiones.`);
     });
 
-    $('#cfg-nuevo-responsable').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); $('#btnAgregarResponsable').click(); }
+    $('#btnGuardarAuto').addEventListener('click', () => {
+      const segundos = Number($('#cfg-auto').value) || 0;
+      Config.set({ autoRefreshSegundos: segundos });
+      toast(segundos > 0 ? `Actualización automática cada ${segundos} segundos.` : 'Actualización automática desactivada.');
     });
 
-    $('#responsablesChips').addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-quitar]');
-      if (!btn) return;
-      const cfg = Config.quitarResponsable(btn.dataset.quitar);
-      renderResponsablesChips(cfg);
+    conectarListaFrecuente({
+      inputId: 'cfg-nuevo-responsable', btnAgregarId: 'btnAgregarResponsable', chipsId: 'responsablesChips',
+      agregar: (v) => Config.agregarResponsable(v), quitar: (v) => Config.quitarResponsable(v),
+    });
+    conectarListaFrecuente({
+      inputId: 'cfg-nuevo-motivo', btnAgregarId: 'btnAgregarMotivo', chipsId: 'motivosChips',
+      agregar: (v) => Config.agregarMotivo(v), quitar: (v) => Config.quitarMotivo(v),
+    });
+    conectarListaFrecuente({
+      inputId: 'cfg-nueva-categoria', btnAgregarId: 'btnAgregarCategoria', chipsId: 'categoriasChips',
+      agregar: (v) => Config.agregarCategoria(v), quitar: (v) => Config.quitarCategoria(v),
     });
   }
 
@@ -526,6 +560,7 @@
         renderChartCategorias(ultimosInsumosReporte);
         renderChartEstados(ultimosInsumosReporte);
       }
+      if (vistaActual === 'logistica') cargarLogistica();
     });
   }
 

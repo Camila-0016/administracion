@@ -1,9 +1,3 @@
-/* ==========================================================
-   Configuración de la aplicación — persistida en LocalStorage.
-   No depende del backend: son preferencias de esta terminal/
-   navegador, aplicadas de inmediato a la cabecera, al modal de
-   movimientos y a las gráficas de detalle del Tablero General.
-   ========================================================== */
 window.Config = (() => {
   'use strict';
 
@@ -14,6 +8,8 @@ window.Config = (() => {
     faenaAltitud: 4000,
     diasHistorial: 30,
     tema: 'dark',
+    camionesLogistica: 4,
+    autoRefreshSegundos: 0,
     responsables: [
       'M. Quispe (Pañol)',
       'J. Cardozo (Logística)',
@@ -21,6 +17,35 @@ window.Config = (() => {
       'R. Farfán (Planta)',
       'L. Choque (Turno noche)',
     ],
+    motivos: [
+      'Consumo diario',
+      'Mantenimiento preventivo',
+      'Reemplazo correctivo',
+      'Ingreso por remito',
+      'Devolución a pañol',
+      'Ajuste por inventario físico',
+    ],
+    categorias: [
+      'Reactivos químicos',
+      'Laboratorio de control',
+      'Equipos de proceso',
+      'Filtros y elementos',
+      'Repuestos de cintas',
+      'Combustibles',
+      'Lubricantes',
+      'Salud ocupacional',
+      'Mantenimiento eléctrico',
+      'Repuestos mecánicos',
+      'Ferretería industrial',
+    ],
+  };
+
+  // Las tres listas "frecuentes" (responsables, motivos, categorías) siguen
+  // exactamente el mismo patrón: leer, agregar sin duplicar y quitar.
+  const LISTAS = {
+    responsables: 'responsablesList',
+    motivos: 'motivosList',
+    categorias: 'categoriasList',
   };
 
   function leer() {
@@ -43,9 +68,11 @@ window.Config = (() => {
     document.title = `${cfg.faenaNombre} · Inventario Inteligente en Altura`;
   }
 
-  function aplicarADatalist(cfg) {
-    const dl = document.getElementById('responsablesList');
-    if (dl) dl.innerHTML = cfg.responsables.map((r) => `<option>${r}</option>`).join('');
+  function aplicarADatalists(cfg) {
+    Object.entries(LISTAS).forEach(([clave, idDatalist]) => {
+      const dl = document.getElementById(idDatalist);
+      if (dl) dl.innerHTML = cfg[clave].map((v) => `<option>${v}</option>`).join('');
+    });
   }
 
   function aplicarTema(cfg) {
@@ -63,30 +90,32 @@ window.Config = (() => {
     const nuevo = { ...leer(), ...parcial };
     persistir(nuevo);
     aplicarATopbar(nuevo);
-    aplicarADatalist(nuevo);
+    aplicarADatalists(nuevo);
     aplicarTema(nuevo);
     window.dispatchEvent(new CustomEvent('config:actualizada', { detail: nuevo }));
     return nuevo;
   }
 
-  function agregarResponsable(nombre) {
-    const limpio = String(nombre || '').trim();
+  /** Agrega un valor a una de las tres listas frecuentes, sin duplicar (case-insensitive). */
+  function agregarALista(clave, valor) {
+    const limpio = String(valor || '').trim();
     if (!limpio) return leer();
     const actual = leer();
-    if (actual.responsables.some((r) => r.toLowerCase() === limpio.toLowerCase())) return actual;
-    return set({ responsables: [...actual.responsables, limpio] });
+    if (actual[clave].some((v) => v.toLowerCase() === limpio.toLowerCase())) return actual;
+    return set({ [clave]: [...actual[clave], limpio] });
   }
 
-  function quitarResponsable(nombre) {
+  /** Quita un valor de una de las tres listas frecuentes. */
+  function quitarDeLista(clave, valor) {
     const actual = leer();
-    return set({ responsables: actual.responsables.filter((r) => r !== nombre) });
+    return set({ [clave]: actual[clave].filter((v) => v !== valor) });
   }
 
   // El script se carga al final del documento: los nodos de la cabecera
-  // y el datalist ya existen en el DOM, así que se aplica de inmediato.
+  // y los datalist ya existen en el DOM, así que se aplica de inmediato.
   const inicial = leer();
   aplicarATopbar(inicial);
-  aplicarADatalist(inicial);
+  aplicarADatalists(inicial);
   aplicarTema(inicial);
 
   const btnTema = document.getElementById('btnTema');
@@ -96,8 +125,15 @@ window.Config = (() => {
     get: leer,
     set,
     diasHistorial: () => leer().diasHistorial,
-    agregarResponsable,
-    quitarResponsable,
+    camionesLogistica: () => leer().camionesLogistica,
+
+    agregarResponsable: (v) => agregarALista('responsables', v),
+    quitarResponsable: (v) => quitarDeLista('responsables', v),
+    agregarMotivo: (v) => agregarALista('motivos', v),
+    quitarMotivo: (v) => quitarDeLista('motivos', v),
+    agregarCategoria: (v) => agregarALista('categorias', v),
+    quitarCategoria: (v) => quitarDeLista('categorias', v),
+
     alternarTema,
   };
 })();

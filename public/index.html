@@ -273,6 +273,32 @@
             <button class="btn btn-primary btn-sm" id="btnGuardarDias" style="align-self:flex-start">Guardar</button>
           </div>
 
+          <div class="config-card">
+            <h3>Camiones en Logística</h3>
+            <p class="cap">Cuántas tarjetas de despacho se muestran en la pantalla de Logística.</p>
+            <div class="field">
+              <label for="cfg-camiones">Cantidad de camiones</label>
+              <input id="cfg-camiones" type="number" min="2" max="8" step="1" class="mono" value="4">
+              <span class="help">Entre 2 y 8.</span>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnGuardarCamiones" style="align-self:flex-start">Guardar</button>
+          </div>
+
+          <div class="config-card">
+            <h3>Actualización automática</h3>
+            <p class="cap">Refresca el Tablero solo, útil si dejás la pantalla abierta en una sala de control.</p>
+            <div class="field">
+              <label for="cfg-auto">Frecuencia</label>
+              <select id="cfg-auto">
+                <option value="0">Desactivada</option>
+                <option value="30">Cada 30 segundos</option>
+                <option value="60">Cada 1 minuto</option>
+                <option value="120">Cada 2 minutos</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnGuardarAuto" style="align-self:flex-start">Guardar</button>
+          </div>
+
           <div class="config-card config-card-wide">
             <h3>Responsables frecuentes</h3>
             <p class="cap">Aparecen como sugerencia al registrar un movimiento de entrada o salida.</p>
@@ -280,6 +306,26 @@
             <div class="config-add-row">
               <input id="cfg-nuevo-responsable" type="text" placeholder="Agregar responsable (ej. M. Quispe — Pañol)">
               <button class="btn btn-sm" id="btnAgregarResponsable">Agregar</button>
+            </div>
+          </div>
+
+          <div class="config-card config-card-wide">
+            <h3>Motivos frecuentes</h3>
+            <p class="cap">Aparecen como sugerencia en el campo Motivo al registrar un movimiento.</p>
+            <div class="chips" id="motivosChips"></div>
+            <div class="config-add-row">
+              <input id="cfg-nuevo-motivo" type="text" placeholder="Agregar motivo (ej. Ajuste por vencimiento)">
+              <button class="btn btn-sm" id="btnAgregarMotivo">Agregar</button>
+            </div>
+          </div>
+
+          <div class="config-card config-card-wide">
+            <h3>Categorías frecuentes</h3>
+            <p class="cap">Se sugieren al cargar un insumo nuevo, aunque todavía ningún insumo las use — sirve para no repetir una categoría con dos nombres distintos.</p>
+            <div class="chips" id="categoriasChips"></div>
+            <div class="config-add-row">
+              <input id="cfg-nueva-categoria" type="text" placeholder="Agregar categoría (ej. Repuestos neumáticos)">
+              <button class="btn btn-sm" id="btnAgregarCategoria">Agregar</button>
             </div>
           </div>
         </div>
@@ -393,14 +439,7 @@
       <div class="field wide">
         <label for="m-motivo">Motivo</label>
         <input id="m-motivo" name="motivo" list="motivosList" placeholder="Consumo diario">
-        <datalist id="motivosList">
-          <option>Consumo diario</option>
-          <option>Mantenimiento preventivo</option>
-          <option>Reemplazo correctivo</option>
-          <option>Ingreso por remito</option>
-          <option>Devolución a pañol</option>
-          <option>Ajuste por inventario físico</option>
-        </datalist>
+        <datalist id="motivosList"></datalist>
       </div>
     </form>
   </div>
