@@ -7,7 +7,7 @@ window.Config = (() => {
     faenaNombre: 'Faena Salar',
     faenaAltitud: 4000,
     diasHistorial: 30,
-    tema: 'dark',
+    tema: 'light',
     camionesLogistica: 4,
     autoRefreshSegundos: 0,
     responsables: [

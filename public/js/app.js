@@ -47,6 +47,13 @@
 
   // ---------- KPIs ----------
 
+  const ICONO = {
+    caja: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg>',
+    alerta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v5M12 18v.5"/></svg>',
+    medidor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/></svg>',
+    reloj: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  };
+
   async function renderKpis() {
     const k = await API.kpis();
     const prox = k.proximo_reaprovisionamiento;
@@ -55,22 +62,26 @@
       : 'Sin pendientes';
 
     $('#kpis').innerHTML = `
-      <div class="kpi">
+      <div class="kpi kpi-hero">
+        <span class="kpi-ico">${ICONO.caja}</span>
         <div class="label">Insumos en catálogo</div>
         <div class="value">${k.total_insumos}</div>
         <div class="foot">${k.operativos} operativos · ${k.advertencia} en advertencia</div>
       </div>
       <div class="kpi ${k.criticos ? 'is-critical' : ''}">
+        <span class="kpi-ico">${ICONO.alerta}</span>
         <div class="label">Quiebre inminente</div>
         <div class="value">${k.criticos}</div>
         <div class="foot">La cobertura no alcanza a cubrir el viaje del camión</div>
       </div>
       <div class="kpi is-accent">
+        <span class="kpi-ico">${ICONO.medidor}</span>
         <div class="label">Cobertura global</div>
         <div class="value">${num(k.cobertura_global)}%</div>
         <div class="meter"><i style="width:${Math.min(100, k.cobertura_global)}%"></i></div>
       </div>
       <div class="kpi">
+        <span class="kpi-ico">${ICONO.reloj}</span>
         <div class="label">Próximo reaprovisionamiento</div>
         <div class="value" style="font-size:19px">${cuando}</div>
         <div class="foot">${prox ? `${prox.nombre} · lead time ${prox.lead_time_dias} d` : '—'}</div>

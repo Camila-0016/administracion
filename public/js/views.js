@@ -237,7 +237,7 @@
 
   // ---------- Vista: Reportes ----------
 
-  const PALETA_CATEGORIAS = ['#0ea5e9', '#06b6d4', '#818cf8', '#a78bfa', '#34d399', '#fbbf24', '#fb7185', '#94a3b8'];
+  const PALETA_CATEGORIAS = ['#2563eb', '#60a5fa', '#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#f43f5e', '#94a3b8'];
 
   function coloresTema() {
     const cs = getComputedStyle(document.documentElement);

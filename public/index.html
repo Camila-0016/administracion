@@ -10,14 +10,15 @@
     (function () {
       try {
         var raw = localStorage.getItem('miningtech.config.v1');
-        var tema = raw ? (JSON.parse(raw).tema || 'dark') : 'dark';
+        var tema = raw ? (JSON.parse(raw).tema || 'light') : 'light';
         document.documentElement.setAttribute('data-theme', tema);
-      } catch (_) { /* sin localStorage: se queda con el tema oscuro por defecto */ }
+      } catch (_) { /* sin localStorage: se queda con el tema claro por defecto */ }
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#0f172a">
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
@@ -97,7 +98,14 @@
 
       <!-- ============ Vista 1: Tablero General ============ -->
       <section id="view-tablero" class="view">
-        <section aria-label="Indicadores del almacén">
+        <div class="hero hero-almacen">
+          <div class="hero-copy">
+            <span class="eyebrow">Almacén de altura</span>
+            <h2>Control de insumos de la faena</h2>
+            <p>Cobertura, quiebres y reposición del pañol central en un solo lugar.</p>
+          </div>
+        </div>
+<section aria-label="Indicadores del almacén">
           <div class="kpi-grid" id="kpis"></div>
         </section>
 
@@ -185,7 +193,14 @@
 
       <!-- ============ Vista 4: Logística y camiones en tránsito ============ -->
       <section id="view-logistica" class="view" hidden>
-        <div class="section-head">
+        <div class="hero hero-logistica">
+          <div class="hero-copy">
+            <span class="eyebrow">Reposición en ruta</span>
+            <h2>Abastecimiento a la Puna</h2>
+            <p>Seguimiento de los camiones que reponen el pañol de la faena.</p>
+          </div>
+        </div>
+                <div class="section-head">
           <h2>Logística y camiones en tránsito</h2>
           <span class="hint">Simulación operativa del trayecto desde el centro de distribución hasta la faena.</span>
         </div>
@@ -197,7 +212,14 @@
 
       <!-- ============ Vista 5: Reportes ============ -->
       <section id="view-reportes" class="view" hidden>
-        <div class="section-head">
+        <div class="hero hero-reportes">
+          <div class="hero-copy">
+            <span class="eyebrow">Análisis del almacén</span>
+            <h2>Reportes para decidir a tiempo</h2>
+            <p>Cobertura, criticidad y categorías de los insumos de la faena.</p>
+          </div>
+        </div>
+                <div class="section-head">
           <h2>Reportes</h2>
           <span class="hint">Análisis agregado del catálogo actual — se recalcula al abrir esta pantalla.</span>
           <button class="btn btn-sm btn-ghost" id="btnRefrescarReportes" style="margin-left:auto">Actualizar</button>

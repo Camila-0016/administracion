@@ -8,7 +8,9 @@ const P = (f) => path.join(__dirname, 'public', f);
 const read = (f) => fs.readFileSync(P(f), 'utf8');
 
 let html = read('index.html');
-const css = read('css/styles.css');
+// Las imágenes de css/ (../img/*.jpg) se incrustan en base64 para que la demo siga siendo un único archivo.
+const css = read('css/styles.css').replace(/url\(\.\.\/img\/([\w.-]+)\)/g, (_, f) =>
+  `url(data:image/jpeg;base64,${fs.readFileSync(P('img/' + f)).toString('base64')})`);
 
 // 1. Inlinear CSS
 // (se usa una función de reemplazo: en un string literal, "$$" se colapsaría a "$")

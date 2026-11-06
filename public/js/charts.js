@@ -2,9 +2,9 @@
 window.Charts = (() => {
   const C = {
     text: '#94a3b8',
-    grid: 'rgba(51, 65, 85, 0.35)',
-    accent: '#0ea5e9',
-    accent2: '#06b6d4',
+    grid: 'rgba(100, 116, 139, 0.2)',
+    accent: '#2563eb',
+    accent2: '#60a5fa',
     warn: '#f59e0b',
     critical: '#f43f5e',
     ok: '#10b981',
@@ -32,7 +32,7 @@ window.Charts = (() => {
       beginAtZero: true,
       grid: { color: C.grid },
       title: { display: !!unidad, text: unidad, color: C.text },
-      ticks: { font: { family: "'JetBrains Mono', monospace" } },
+      ticks: { font: { family: "'Inter', system-ui, sans-serif" } },
     },
   });
 
@@ -43,7 +43,7 @@ window.Charts = (() => {
     padding: 10,
     titleColor: '#e2e8f0',
     bodyColor: '#cbd5e1',
-    bodyFont: { family: "'JetBrains Mono', monospace" },
+    bodyFont: { family: "'Inter', system-ui, sans-serif" },
   };
 
   /** Evolución de stock a 30 días + proyección, contra mínimo y punto de reorden. */
@@ -68,7 +68,7 @@ window.Charts = (() => {
             label: 'Stock real',
             data: real,
             borderColor: C.accent,
-            backgroundColor: 'rgba(14,165,233,.12)',
+            backgroundColor: 'rgba(37,99,235,.12)',
             fill: true,
             tension: 0.25,
             pointRadius: 0,
@@ -129,7 +129,7 @@ window.Charts = (() => {
           {
             label: 'Consumo registrado',
             data: datos.map((p) => p.consumo),
-            backgroundColor: 'rgba(6,182,212,.45)',
+            backgroundColor: 'rgba(96,165,250,.55)',
             borderColor: C.accent2,
             borderWidth: 1,
             borderRadius: 2,
