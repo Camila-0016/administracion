@@ -58,11 +58,13 @@
     const k = await API.kpis();
     const prox = k.proximo_reaprovisionamiento;
     const cuando = prox
-      ? (prox.dias <= 0 ? 'Pedido vencido — emitir hoy' : `En ${num(prox.dias)} días`)
+      ? (prox.dias <= 0 ? 'Pedido vencido: emitir hoy' : `En ${num(prox.dias)} días`)
       : 'Sin pendientes';
+    const alertas = k.criticos + k.advertencia;
+    const camiones = window.Config ? window.Config.camionesLogistica() : 4;
 
     $('#kpis').innerHTML = `
-      <div class="kpi kpi-hero">
+      <div class="kpi">
         <span class="kpi-ico">${ICONO.caja}</span>
         <div class="label">Insumos en catálogo</div>
         <div class="value">${k.total_insumos}</div>
@@ -78,14 +80,24 @@
         <span class="kpi-ico">${ICONO.medidor}</span>
         <div class="label">Cobertura global</div>
         <div class="value">${num(k.cobertura_global)}%</div>
-        <div class="meter"><i style="width:${Math.min(100, k.cobertura_global)}%"></i></div>
+        <div class="meter" role="presentation"><i style="width:${Math.min(100, k.cobertura_global)}%"></i></div>
       </div>
       <div class="kpi">
         <span class="kpi-ico">${ICONO.reloj}</span>
         <div class="label">Próximo reaprovisionamiento</div>
-        <div class="value" style="font-size:19px">${cuando}</div>
+        <div class="value value-sm">${cuando}</div>
         <div class="foot">${prox ? `${prox.nombre} · lead time ${prox.lead_time_dias} d` : '—'}</div>
       </div>`;
+
+    // La tarjeta de flujo y el hero se alimentan de los mismos KPIs que la grilla,
+    // así no hay dos verdades distintas en pantalla.
+    $('#flowTotal').textContent = num(k.total_insumos);
+    $('#flowCriticos').textContent = num(k.criticos);
+    $('#flowCobertura').textContent = `${num(k.cobertura_global)}%`;
+    $('#flowCamiones').textContent = `${camiones} en tránsito`;
+    $('#flowProximo').textContent = prox ? `${cuando} · ${prox.nombre}` : 'Sin pedidos pendientes';
+    $('#heroCobertura').textContent = num(k.cobertura_global);
+    $('#heroAlertasCount').textContent = alertas;
   }
 
   // ---------- Tabla ----------
@@ -131,6 +143,10 @@
   function renderTabla() {
     const filas = ordenar(filtrar());
     $('#vacio').hidden = filas.length > 0;
+    $('#tabla').hidden = filas.length === 0;
+    $('#resultCount').textContent = filas.length === estado.insumos.length
+      ? `${estado.insumos.length} insumos`
+      : `${filas.length} de ${estado.insumos.length} insumos`;
 
     $('#tbody').innerHTML = filas.map((i) => {
       const e = ESTADOS[i.estado];
@@ -140,7 +156,7 @@
           <div class="sku mono">${i.sku}</div>
         </td>
         <td>${i.categoria}</td>
-        <td class="num mono">${num(i.stock_actual)} <span style="color:var(--text-mute)">${i.unidad}</span></td>
+        <td class="num mono">${num(i.stock_actual)} <span class="unit">${i.unidad}</span></td>
         <td class="num mono">${num(i.stock_minimo)}</td>
         <td class="num mono">${num(i.consumo_diario)}</td>
         <td class="num mono">${i.lead_time_dias} d</td>
@@ -148,8 +164,12 @@
         <td><span class="badge ${e.clase}">${e.texto}</span></td>
         <td class="num">
           <div class="row-actions">
-            <button class="icon-btn" data-mov="ENTRADA" data-id="${i.id}" title="Registrar entrada">+</button>
-            <button class="icon-btn" data-mov="SALIDA" data-id="${i.id}" title="Registrar salida">−</button>
+            <button class="icon-btn" data-mov="ENTRADA" data-id="${i.id}" title="Registrar entrada" aria-label="Registrar entrada de ${i.nombre}">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>
+            </button>
+            <button class="icon-btn" data-mov="SALIDA" data-id="${i.id}" title="Registrar salida" aria-label="Registrar salida de ${i.nombre}">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8h9"/></svg>
+            </button>
           </div>
         </td>
       </tr>`;
@@ -160,9 +180,12 @@
       th.querySelector('.arrow')?.remove();
       if (activo) {
         const s = document.createElement('span');
-        s.className = 'arrow';
-        s.textContent = estado.orden.dir === 'asc' ? '↑' : '↓';
+        s.className = `arrow ${estado.orden.dir}`;
+        s.setAttribute('aria-hidden', 'true');
         th.append(s);
+        th.setAttribute('aria-sort', estado.orden.dir === 'asc' ? 'ascending' : 'descending');
+      } else {
+        th.setAttribute('aria-sort', 'none');
       }
     });
   }
@@ -202,33 +225,33 @@
     const e = ESTADOS[i.estado];
 
     $('#drawerTitulo').textContent = i.nombre;
-    $('#drawerSub').innerHTML = `${i.sku} · ${i.categoria} · <span class="badge ${e.clase}">${e.texto}</span>`;
+    $('#drawerSub').innerHTML = `<span>${i.sku} · ${i.categoria}</span><span class="badge ${e.clase}">${e.texto}</span>`;
 
     $('#drawerBody').innerHTML = `
       <div class="stat-row">
-        <div class="stat"><div class="label">Stock actual</div><div class="value">${num(i.stock_actual)} <span style="font-size:12px;color:var(--text-mute)">${i.unidad}</span></div></div>
+        <div class="stat"><div class="label">Stock actual</div><div class="value">${num(i.stock_actual)} <span class="unit">${i.unidad}</span></div></div>
         <div class="stat"><div class="label">Cobertura</div><div class="value">${num(i.cobertura_dias)} d</div></div>
         <div class="stat"><div class="label">Lead time</div><div class="value">${i.lead_time_dias} d</div></div>
         <div class="stat"><div class="label">Punto de reorden</div><div class="value">${num(i.punto_reorden)}</div></div>
-        <div class="stat"><div class="label">Quiebre estimado</div><div class="value" style="font-size:14px">${fechaLarga(i.fecha_quiebre)}</div></div>
+        <div class="stat"><div class="label">Quiebre estimado</div><div class="value value-sm">${fechaLarga(i.fecha_quiebre)}</div></div>
       </div>
 
       <div class="chart-card">
-        <h4>Nivel de stock, últimos ${dias} días</h4>
-        <p class="cap">La línea punteada cian proyecta el stock si el consumo se mantiene igual.</p>
+        <h3>Nivel de stock, últimos ${dias} días</h3>
+        <p class="cap">La línea punteada proyecta el stock si el consumo se mantiene igual.</p>
         <div class="chart-box"><canvas id="chartEvolucion"></canvas></div>
       </div>
 
       <div class="chart-card">
-        <h4>Consumo diario y runway</h4>
+        <h3>Consumo diario y runway</h3>
         <p class="cap">Promedio observado en la ventana: <span class="mono">${num(serie.consumo_observado)} ${i.unidad}/día</span>. Al ritmo de referencia el stock llega a cero el <strong>${fechaLarga(i.fecha_quiebre)}</strong>.</p>
         <div class="chart-box"><canvas id="chartConsumo"></canvas></div>
       </div>
 
-      <div class="section-head" style="margin-top:22px">
+      <div class="section-head">
         <h2>Historial de movimientos</h2>
         <span class="hint">${historial.length} asientos</span>
-        <div style="margin-left:auto;display:flex;gap:6px">
+        <div class="head-actions">
           <button class="btn btn-sm" data-mov="ENTRADA" data-id="${i.id}">Registrar entrada</button>
           <button class="btn btn-sm" data-mov="SALIDA" data-id="${i.id}">Registrar salida</button>
         </div>
@@ -245,7 +268,7 @@
               <td>${m.responsable}</td>
               <td><span class="badge ${m.tipo === 'ENTRADA' ? 'ok' : 'neutral'}">${m.tipo === 'ENTRADA' ? 'Entrada' : 'Salida'}</span></td>
               <td class="num mono">${m.tipo === 'ENTRADA' ? '+' : '−'}${num(m.cantidad)}</td>
-              <td style="color:var(--text-dim)">${m.motivo || '—'}</td>
+              <td class="motive">${m.motivo || '—'}</td>
             </tr>`).join('')}
           </tbody>
         </table>
@@ -466,6 +489,7 @@
     window.addEventListener('config:actualizada', () => {
       if (estado.detalleId) abrirDetalle(estado.detalleId);
       renderCategorias();
+      renderKpis();
       configurarAutoRefresh(window.Config.get().autoRefreshSegundos);
     });
   }

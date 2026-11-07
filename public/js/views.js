@@ -40,6 +40,7 @@
 
   function irA(vista, { forzar = false } = {}) {
     if (!VISTAS.includes(vista)) return;
+    const anterior = vistaActual;
     vistaActual = vista;
 
     $$('.view').forEach((s) => { s.hidden = true; });
@@ -52,6 +53,7 @@
 
     const boton = $(`.nav-item[data-view="${vista}"]`);
     $('#pageTitle').textContent = boton ? boton.dataset.title : 'Tablero General';
+    if (anterior !== vista) window.scrollTo(0, 0);
 
     // Cada vista trae sus propios datos la primera vez que se abre; luego
     // queda al día por el evento "inventario:actualizado" que dispara app.js.
@@ -237,21 +239,51 @@
 
   // ---------- Vista: Reportes ----------
 
-  const PALETA_CATEGORIAS = ['#2563eb', '#60a5fa', '#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#f43f5e', '#94a3b8'];
+  const ICONO_REPORTE = {
+    categorias: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+    entradas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11M7.5 9.5 12 14l4.5-4.5"/><path d="M4 17v3h16v-3"/></svg>',
+    salidas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V3M7.5 7.5 12 3l4.5 4.5"/><path d="M4 17v3h16v-3"/></svg>',
+    margen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/><path d="M4 20h16"/></svg>',
+  };
 
   function coloresTema() {
     const cs = getComputedStyle(document.documentElement);
     const v = (nombre, fallback) => (cs.getPropertyValue(nombre).trim() || fallback);
     return {
-      text: v('--text-dim', '#94a3b8'),
-      grid: 'rgba(148, 163, 184, 0.22)',
-      surface: v('--surface', '#0f172a'),
+      text: v('--text-mute', '#5c6b6b'),
+      strong: v('--text', '#072c2c'),
+      grid: v('--chart-grid', 'rgba(7, 44, 44, 0.12)'),
+      surface: v('--surface', '#ffffff'),
+      accent: v('--accent', '#ff5f03'),
+      mono: v('--mono', "'JetBrains Mono', monospace"),
+      sans: v('--sans', "'Inter', system-ui, sans-serif"),
+      featureBg: v('--feature-bg', '#072c2c'),
+      featureText: v('--feature-text', '#edeade'),
+      palette: Array.from({ length: 8 }, (_, i) => v(`--chart-${i + 1}`, '#072c2c')),
       estado: {
-        OPERATIVO: v('--ok', '#10b981'),
-        ADVERTENCIA: v('--warn', '#f59e0b'),
-        CRITICO: v('--critical', '#f43f5e'),
-        QUIEBRE: v('--critical', '#f43f5e'),
+        OPERATIVO: v('--ok', '#067647'),
+        ADVERTENCIA: v('--warn', '#b54708'),
+        CRITICO: v('--critical', '#b42318'),
+        QUIEBRE: v('--critical', '#b42318'),
       },
+    };
+  }
+
+  function tooltipTema(C) {
+    return {
+      backgroundColor: C.featureBg,
+      titleColor: C.featureText,
+      bodyColor: C.featureText,
+      borderColor: C.accent,
+      borderWidth: 1,
+      padding: 10,
+      cornerRadius: 6,
+      displayColors: true,
+      boxWidth: 8,
+      boxHeight: 8,
+      usePointStyle: true,
+      titleFont: { family: C.mono, size: 10, weight: '600' },
+      bodyFont: { family: C.mono, size: 10 },
     };
   }
 
@@ -273,23 +305,27 @@
 
     $('#reportKpis').innerHTML = `
       <div class="kpi">
+        <span class="kpi-ico">${ICONO_REPORTE.categorias}</span>
         <div class="label">Categorías activas</div>
         <div class="value">${new Set(insumos.map((i) => i.categoria)).size}</div>
         <div class="foot">${insumos.length} insumos en el catálogo</div>
       </div>
       <div class="kpi">
+        <span class="kpi-ico">${ICONO_REPORTE.entradas}</span>
         <div class="label">Entradas registradas</div>
         <div class="value">${entradas}</div>
         <div class="foot">de los últimos ${movimientos.length} movimientos</div>
       </div>
       <div class="kpi">
+        <span class="kpi-ico">${ICONO_REPORTE.salidas}</span>
         <div class="label">Salidas registradas</div>
         <div class="value">${salidas}</div>
         <div class="foot">de los últimos ${movimientos.length} movimientos</div>
       </div>
       <div class="kpi ${top && top.r < 1 ? 'is-critical' : ''}">
+        <span class="kpi-ico">${ICONO_REPORTE.margen}</span>
         <div class="label">Insumo con menor margen</div>
-        <div class="value" style="font-size:16px">${top ? top.i.nombre : '—'}</div>
+        <div class="value value-sm">${top ? top.i.nombre : '—'}</div>
         <div class="foot">${top ? `cobertura ${num(top.i.cobertura_dias)} d vs. lead time ${top.i.lead_time_dias} d` : 'sin datos suficientes'}</div>
       </div>`;
   }
@@ -307,18 +343,31 @@
         labels: entradas.map(([cat]) => cat),
         datasets: [{
           data: entradas.map(([, n]) => n),
-          backgroundColor: entradas.map((_, idx) => PALETA_CATEGORIAS[idx % PALETA_CATEGORIAS.length]),
-          borderRadius: 3,
+          // La categoría más grande se marca en naranja; el resto queda en tinta.
+          backgroundColor: entradas.map((_, idx) => (idx === 0 ? C.accent : C.strong)),
+          hoverBackgroundColor: C.accent,
+          borderRadius: 2,
+          barPercentage: 0.72,
+          categoryPercentage: 0.84,
         }],
       },
       options: {
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: { legend: { display: false }, tooltip: tooltipTema(C) },
         scales: {
-          x: { beginAtZero: true, ticks: { color: C.text, stepSize: 1 }, grid: { color: C.grid } },
-          y: { ticks: { color: C.text }, grid: { display: false } },
+          x: {
+            beginAtZero: true,
+            ticks: { color: C.text, stepSize: 1, font: { family: C.mono, size: 10 } },
+            grid: { color: C.grid },
+            border: { display: false },
+          },
+          y: {
+            ticks: { color: C.strong, font: { family: C.mono, size: 10 } },
+            grid: { display: false },
+            border: { display: false },
+          },
         },
       },
     });
@@ -339,13 +388,28 @@
           backgroundColor: orden.map((e) => C.estado[e]),
           borderColor: C.surface,
           borderWidth: 2,
+          hoverOffset: 5,
         }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '68%',
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, boxHeight: 10, padding: 14, color: C.text } } },
+        cutout: '70%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: C.strong,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 7,
+              boxHeight: 7,
+              padding: 13,
+              font: { family: C.mono, size: 10 },
+            },
+          },
+          tooltip: tooltipTema(C),
+        },
       },
     });
   }
@@ -513,6 +577,7 @@
 
   // ---------- Badge de alertas en el sidebar ----------
 
+  /** Refresca el contador del menú y el del CTA del hero a la vez. */
   async function actualizarBadge(valorConocido = null) {
     try {
       let n = valorConocido;
@@ -521,8 +586,12 @@
         n = k.criticos + k.advertencia;
       }
       const b = $('#badgeAlertas');
-      b.textContent = n;
-      b.hidden = n === 0;
+      if (b) {
+        b.textContent = n;
+        b.hidden = n === 0;
+      }
+      const hero = $('#heroAlertasCount');
+      if (hero) hero.textContent = n;
     } catch (_) { /* el badge es un detalle secundario, no interrumpe el resto */ }
   }
 
@@ -532,6 +601,15 @@
     $('#navList').addEventListener('click', (e) => {
       const btn = e.target.closest('.nav-item');
       if (btn) irA(btn.dataset.view);
+    });
+
+    // CTA del hero, tarjeta de flujo y marca comparten el mismo contrato:
+    // cualquier elemento con data-go navega sin recargar la página.
+    document.addEventListener('click', (e) => {
+      const destino = e.target.closest('[data-go]');
+      if (!destino) return;
+      e.preventDefault();
+      irA(destino.dataset.go);
     });
 
     $('#btnRefrescarMov')?.addEventListener('click', cargarMovimientos);
@@ -559,6 +637,10 @@
       if (vistaActual === 'reportes' && ultimosInsumosReporte.length) {
         renderChartCategorias(ultimosInsumosReporte);
         renderChartEstados(ultimosInsumosReporte);
+      } else {
+        // Los canvas no heredan variables CSS: al volver a Reportes hay que
+        // reconstruirlos con los colores del tema vigente.
+        cargado.delete('reportes');
       }
       if (vistaActual === 'logistica') cargarLogistica();
     });

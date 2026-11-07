@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-06T15:25:15.776Z",
+        "reason": "User: Stitch visual language mandates Inter for body copy"
+      },
+      {
+        "rule": "overused-font",
+        "value": "space grotesk",
+        "createdAt": "2026-11-06T15:25:22.797Z",
+        "reason": "User: Stitch visual language mandates Space Grotesk for display"
+      }
+    ]
+  }
+}

@@ -77,6 +77,8 @@ window.Config = (() => {
 
   function aplicarTema(cfg) {
     document.documentElement.setAttribute('data-theme', cfg.tema);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', cfg.tema === 'dark' ? '#062B2A' : '#EDEADE');
     const btn = document.getElementById('btnTema');
     if (btn) btn.setAttribute('aria-label', cfg.tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
   }

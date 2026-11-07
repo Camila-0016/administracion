@@ -1,0 +1,631 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-07T02:27:26.205Z",
+  "title": "Design System: MiningTech Inventario",
+  "extensions": {
+    "colorMeta": {
+      "signal-orange": {
+        "role": "primary",
+        "displayName": "Naranja de señal",
+        "canonical": "#FF5F03",
+        "tonalRamp": [
+          "#3D1200",
+          "#6E2200",
+          "#A03300",
+          "#D14400",
+          "#FF5F03",
+          "#FF8A4C",
+          "#FFB58A",
+          "#FFE0CC"
+        ]
+      },
+      "salar-ink": {
+        "role": "secondary",
+        "displayName": "Tinta Salar",
+        "canonical": "#072C2C",
+        "tonalRamp": [
+          "#02100F",
+          "#062B2A",
+          "#0A4644",
+          "#0E615E",
+          "#147C78",
+          "#3A9995",
+          "#7CBDB9",
+          "#D6E8E5"
+        ]
+      },
+      "bone-field": {
+        "role": "neutral",
+        "displayName": "Campo hueso",
+        "canonical": "#EDEADE",
+        "tonalRamp": [
+          "#3A382F",
+          "#5C5A4E",
+          "#7D7A6B",
+          "#A5A294",
+          "#C9C6B8",
+          "#EDEADE",
+          "#F4F1E8",
+          "#FAF8F3"
+        ]
+      },
+      "field-paper": {
+        "role": "neutral",
+        "displayName": "Papel de campo",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#2B2B2B",
+          "#565656",
+          "#808080",
+          "#A8A8A8",
+          "#D0D0D0",
+          "#FFFFFF",
+          "#FFFFFF",
+          "#FFFFFF"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Regla fuerte",
+        "canonical": "#D9D7CB",
+        "tonalRamp": [
+          "#2E2D27",
+          "#4B4A41",
+          "#6B6A5D",
+          "#8C8A7C",
+          "#B0AEA0",
+          "#D0CEC2",
+          "#D9D7CB",
+          "#F1EFE8"
+        ]
+      },
+      "critical-red": {
+        "role": "tertiary",
+        "displayName": "Rojo crítico",
+        "canonical": "#B42318",
+        "tonalRamp": [
+          "#3B0A06",
+          "#6B130C",
+          "#9B1C12",
+          "#B42318",
+          "#D14A3E",
+          "#E8857C",
+          "#F4BCB6",
+          "#FBE4E1"
+        ]
+      },
+      "warning-amber": {
+        "role": "tertiary",
+        "displayName": "Ámbar de advertencia",
+        "canonical": "#B54708",
+        "tonalRamp": [
+          "#3B2202",
+          "#6B3F06",
+          "#995B0A",
+          "#B54708",
+          "#D46A1E",
+          "#E89B5C",
+          "#F5C99C",
+          "#FCEBD9"
+        ]
+      },
+      "operative-green": {
+        "role": "tertiary",
+        "displayName": "Verde operativo",
+        "canonical": "#067647",
+        "tonalRamp": [
+          "#022417",
+          "#04452C",
+          "#056A43",
+          "#067647",
+          "#1C9A64",
+          "#56BE8E",
+          "#9ADBBE",
+          "#DDF3E8"
+        ]
+      },
+      "night-canvas": {
+        "role": "neutral",
+        "displayName": "Noche de faena",
+        "canonical": "#062B2A",
+        "tonalRamp": [
+          "#010C0B",
+          "#062B2A",
+          "#0A4644",
+          "#0E615E",
+          "#147C78",
+          "#3A9995",
+          "#7CBDB9",
+          "#D6E8E5"
+        ]
+      },
+      "signal-orange-hover": {
+        "role": "primary",
+        "displayName": "Naranja hover",
+        "canonical": "#FF7A2E",
+        "tonalRamp": [
+          "#3D1200",
+          "#6E2200",
+          "#A03300",
+          "#D14400",
+          "#FF5F03",
+          "#FF7A2E",
+          "#FFB58A",
+          "#FFE0CC"
+        ]
+      },
+      "orange-wash": {
+        "role": "primary",
+        "displayName": "Lavado naranja",
+        "canonical": "#FFF3EC",
+        "tonalRamp": [
+          "#3D1200",
+          "#6E2200",
+          "#A03300",
+          "#D14400",
+          "#FF5F03",
+          "#FFA06B",
+          "#FFD1B8",
+          "#FFF3EC"
+        ]
+      },
+      "orange-deep": {
+        "role": "primary",
+        "displayName": "Naranja profundo",
+        "canonical": "#B43A00",
+        "tonalRamp": [
+          "#2E0E00",
+          "#5C1D00",
+          "#8A2C00",
+          "#B43A00",
+          "#D95A1E",
+          "#E98C5E",
+          "#F4C1A6",
+          "#FBE8DC"
+        ]
+      },
+      "ink-dim": {
+        "role": "neutral",
+        "displayName": "Tinta media",
+        "canonical": "#354B4A",
+        "tonalRamp": [
+          "#0B1716",
+          "#132322",
+          "#1C302F",
+          "#263D3C",
+          "#354B4A",
+          "#5F7372",
+          "#93A3A2",
+          "#CBD4D3"
+        ]
+      },
+      "ink-mute": {
+        "role": "neutral",
+        "displayName": "Tinta mute",
+        "canonical": "#5C6B6B",
+        "tonalRamp": [
+          "#151F1F",
+          "#263333",
+          "#3A4949",
+          "#4B5B5B",
+          "#5C6B6B",
+          "#869493",
+          "#B3BEBD",
+          "#DEE5E4"
+        ]
+      },
+      "field-paper-warm": {
+        "role": "neutral",
+        "displayName": "Papel cálido",
+        "canonical": "#FAF9F5",
+        "tonalRamp": [
+          "#3F3D38",
+          "#5F5C55",
+          "#807C72",
+          "#A29E92",
+          "#C7C3B7",
+          "#E4E1D8",
+          "#FAF9F5",
+          "#FDFCF9"
+        ]
+      },
+      "field-sand": {
+        "role": "neutral",
+        "displayName": "Arena",
+        "canonical": "#F2EFE4",
+        "tonalRamp": [
+          "#3C3A31",
+          "#5C594C",
+          "#7B7767",
+          "#9C9785",
+          "#C3BFAE",
+          "#E0DCCF",
+          "#F2EFE4",
+          "#F8F6EF"
+        ]
+      },
+      "rule-line": {
+        "role": "neutral",
+        "displayName": "Línea",
+        "canonical": "#E3E1D6",
+        "tonalRamp": [
+          "#36342C",
+          "#555247",
+          "#747062",
+          "#938F81",
+          "#B3AFA1",
+          "#CBC8BC",
+          "#E3E1D6",
+          "#F2F0EA"
+        ]
+      },
+      "critical-wash": {
+        "role": "tertiary",
+        "displayName": "Lavado crítico",
+        "canonical": "#FEE4E2",
+        "tonalRamp": [
+          "#3B0A06",
+          "#6B130C",
+          "#9B1C12",
+          "#C33A2E",
+          "#E37368",
+          "#F0A9A2",
+          "#F9D0CC",
+          "#FEE4E2"
+        ]
+      },
+      "warning-wash": {
+        "role": "tertiary",
+        "displayName": "Lavado ámbar",
+        "canonical": "#FEF0C7",
+        "tonalRamp": [
+          "#3B2202",
+          "#6B3F06",
+          "#995B0A",
+          "#C47A15",
+          "#E0A13C",
+          "#EDC078",
+          "#F8DDA8",
+          "#FEF0C7"
+        ]
+      },
+      "operative-wash": {
+        "role": "tertiary",
+        "displayName": "Lavado operativo",
+        "canonical": "#DCFCE7",
+        "tonalRamp": [
+          "#022417",
+          "#04452C",
+          "#067647",
+          "#1C9A64",
+          "#4FBF8B",
+          "#88D9B2",
+          "#B9EDD4",
+          "#DCFCE7"
+        ]
+      },
+      "info-blue": {
+        "role": "tertiary",
+        "displayName": "Azul informativo",
+        "canonical": "#075985",
+        "tonalRamp": [
+          "#031B2A",
+          "#06364B",
+          "#075985",
+          "#0B78AE",
+          "#2E9CCF",
+          "#6DBBE0",
+          "#AEDCF0",
+          "#E0F2FE"
+        ]
+      },
+      "night-surface": {
+        "role": "neutral",
+        "displayName": "Superficie noche",
+        "canonical": "#0B3A39",
+        "tonalRamp": [
+          "#041211",
+          "#072120",
+          "#0B3A39",
+          "#0E4A48",
+          "#14615E",
+          "#2F807B",
+          "#6AA8A3",
+          "#C9DEDB"
+        ]
+      },
+      "night-field": {
+        "role": "neutral",
+        "displayName": "Campo noche",
+        "canonical": "#0E4443",
+        "tonalRamp": [
+          "#041312",
+          "#072423",
+          "#0E4443",
+          "#125654",
+          "#17706D",
+          "#2F8A86",
+          "#6FAFAB",
+          "#CDE2DF"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Titular del Tablero y cifras KPI; máximo 16 caracteres por línea."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Títulos de vista en Alertas, Logística, Reportes y Configuración."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Cabeceras de sección y títulos de tarjetas de gráfico."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descripciones, ayudas, copy de formularios y tablas."
+      },
+      "label": {
+        "displayName": "Instrument Label",
+        "purpose": "Etiquetas de KPI, cabeceras de tabla, SKU, fechas y estados."
+      },
+      "display-mobile": {
+        "displayName": "Display móvil",
+        "purpose": "Titular del Tablero en pantallas angostas."
+      },
+      "headline-sm": {
+        "displayName": "Headline compacta",
+        "purpose": "Título de modal."
+      },
+      "title-lg": {
+        "displayName": "Title grande",
+        "purpose": "Título de drawer."
+      },
+      "subtitle-lg": {
+        "displayName": "Subtítulo grande",
+        "purpose": "Valor de KPI en modo texto y cifras compactas."
+      },
+      "subtitle": {
+        "displayName": "Subtítulo",
+        "purpose": "Marca y cifras intermedias."
+      },
+      "title-sm": {
+        "displayName": "Title chica",
+        "purpose": "Título de tarjeta de configuración."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Párrafo de entrada del hero."
+      },
+      "body-lg": {
+        "displayName": "Body grande",
+        "purpose": "Texto base de la aplicación."
+      },
+      "body-md": {
+        "displayName": "Body media",
+        "purpose": "Descripciones de vista."
+      },
+      "body-sm": {
+        "displayName": "Body chica",
+        "purpose": "Controles, tablas y texto denso."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Ayudas, notas y texto auxiliar."
+      },
+      "stat": {
+        "displayName": "Stat",
+        "purpose": "Cifra KPI principal."
+      },
+      "stat-mobile": {
+        "displayName": "Stat móvil",
+        "purpose": "Cifra KPI en pantallas angostas."
+      },
+      "headline-xs": {
+        "displayName": "Headline móvil",
+        "purpose": "Título de vista en pantallas angostas."
+      }
+    },
+    "shadows": [
+      {
+        "name": "stamped-lg",
+        "value": "8px 8px 0 0 #072C2C",
+        "purpose": "Diagrama de abastecimiento y modales."
+      },
+      {
+        "name": "stamped-sm",
+        "value": "4px 4px 0 0 #072C2C",
+        "purpose": "KPI crítico y toasts."
+      },
+      {
+        "name": "stamped-accent",
+        "value": "4px 4px 0 0 #FF5F03",
+        "purpose": "KPI de cobertura y piezas que el sistema elige destacar."
+      },
+      {
+        "name": "drawer-edge",
+        "value": "-10px 0 0 rgba(7, 44, 44, 0.14)",
+        "purpose": "Separación del panel lateral."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Transiciones de hover, foco y estado."
+      },
+      {
+        "name": "drawer-open",
+        "value": "transform 240ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Entrada y salida del drawer de detalle."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "860px"
+      },
+      {
+        "name": "lg",
+        "value": "1120px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción que carga o confirma; naranja de señal con texto tinta.",
+      "html": "<button class='ds-btn-primary'>+ Cargar insumo</button>",
+      "css": ".ds-btn-primary { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:8px 14px; border:1.5px solid #FF5F03; border-radius:8px; background:#FF5F03; color:#072C2C; font-family:'Space Grotesk',Inter,system-ui,sans-serif; font-size:13px; font-weight:700; line-height:1.2; cursor:pointer; transition:background .16s cubic-bezier(.16,1,.3,1), border-color .16s cubic-bezier(.16,1,.3,1); } .ds-btn-primary:hover { background:#FF7A2E; border-color:#FF7A2E; } .ds-btn-primary:focus-visible { outline:2px solid #072C2C; outline-offset:2px; }"
+    },
+    {
+      "name": "Dark Button",
+      "kind": "button",
+      "refersTo": "button-dark",
+      "description": "Acción secundaria de navegación; tinta con texto hueso.",
+      "html": "<button class='ds-btn-dark'>Ver logística</button>",
+      "css": ".ds-btn-dark { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:8px 14px; border:1.5px solid #072C2C; border-radius:8px; background:#072C2C; color:#EDEADE; font-family:'Inter',system-ui,sans-serif; font-size:13px; font-weight:600; line-height:1.2; cursor:pointer; transition:opacity .16s cubic-bezier(.16,1,.3,1); } .ds-btn-dark:hover { opacity:.9; } .ds-btn-dark:focus-visible { outline:2px solid #FF5F03; outline-offset:2px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Búsqueda del catálogo, con icono de trazo y foco naranja.",
+      "html": "<label class='ds-search'><svg viewBox='0 0 20 20' fill='none' aria-hidden='true'><circle cx='9' cy='9' r='5.5'/><path d='m13.2 13.2 4 4'/></svg><input type='search' placeholder='Buscar por nombre o SKU' aria-label='Buscar por nombre o SKU'></label>",
+      "css": ".ds-search { position:relative; display:block; width:100%; } .ds-search svg { position:absolute; top:50%; left:12px; width:16px; height:16px; transform:translateY(-50%); stroke:#5C6B6B; stroke-width:1.7; stroke-linecap:round; pointer-events:none; } .ds-search input { width:100%; min-height:38px; padding:8px 12px 8px 35px; border:1.5px solid #D9D7CB; border-radius:8px; background:#FFFFFF; color:#072C2C; font-family:'Inter',system-ui,sans-serif; font-size:13px; } .ds-search input::placeholder { color:#5C6B6B; opacity:1; } .ds-search input:focus { outline:none; border-color:#FF5F03; box-shadow:0 0 0 3px rgba(255,95,3,.12); }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "Filtro de criticidad; píldora con estado seleccionado en tinta.",
+      "html": "<div class='ds-chips' role='group' aria-label='Filtrar por criticidad'><button class='ds-chip' aria-pressed='true'>Todos</button><button class='ds-chip' aria-pressed='false'>Críticos</button><button class='ds-chip' aria-pressed='false'>Advertencia</button></div>",
+      "css": ".ds-chips { display:flex; flex-wrap:wrap; gap:5px; } .ds-chip { display:inline-flex; align-items:center; min-height:31px; padding:5px 11px; border:1.5px solid #D9D7CB; border-radius:999px; background:#FFFFFF; color:#354B4A; font-family:'Inter',system-ui,sans-serif; font-size:12px; font-weight:600; line-height:1.2; cursor:pointer; transition:background .16s cubic-bezier(.16,1,.3,1), color .16s cubic-bezier(.16,1,.3,1), border-color .16s cubic-bezier(.16,1,.3,1); } .ds-chip:hover { border-color:#5C6B6B; color:#072C2C; } .ds-chip[aria-pressed='true'] { background:#072C2C; border-color:#072C2C; color:#EDEADE; } .ds-chip:focus-visible { outline:2px solid #072C2C; outline-offset:2px; }"
+    },
+    {
+      "name": "Critical KPI Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Indicador de quiebre inminente; etiqueta mono, cifra display y lavado naranja.",
+      "html": "<article class='ds-kpi'><span class='ds-kpi-label'>Quiebre inminente</span><strong class='ds-kpi-value'>6</strong><p class='ds-kpi-foot'>La cobertura no alcanza a cubrir el viaje del camión</p><span class='ds-kpi-ico'><svg viewBox='0 0 20 20' fill='none' aria-hidden='true'><path d='M10 3 18 17H2L10 3Z'/><path d='M10 8v4M10 15h.01'/></svg></span></article>",
+      "css": ".ds-kpi { position:relative; display:flex; flex-direction:column; min-height:142px; padding:18px 18px 16px; border:2px solid #FF5F03; border-radius:16px; background:#FFF3EC; box-shadow:4px 4px 0 0 #FF5F03; color:#072C2C; font-family:'Inter',system-ui,sans-serif; } .ds-kpi-label { padding-right:50px; color:#5C6B6B; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.08em; line-height:1.4; text-transform:uppercase; } .ds-kpi-value { margin-top:8px; color:#B42318; font-family:'Space Grotesk',Inter,system-ui,sans-serif; font-size:38px; font-weight:700; letter-spacing:-.04em; line-height:1.05; } .ds-kpi-foot { margin:auto 0 0; padding-top:14px; color:#5C6B6B; font-size:12px; line-height:1.4; } .ds-kpi-ico { position:absolute; top:14px; right:14px; display:grid; place-items:center; width:36px; height:36px; border:1.5px solid #FFC3A1; border-radius:9px; background:#FFFFFF; color:#B43A00; } .ds-kpi-ico svg { width:18px; height:18px; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "status-badge-critical",
+      "description": "Estado semántico en mono, mayúsculas y lavado crítico.",
+      "html": "<span class='ds-badge-critical'>Crítico</span>",
+      "css": ".ds-badge-critical { display:inline-flex; align-items:center; gap:4px; padding:3px 7px; border:1.5px solid #F2B8B5; border-radius:999px; background:#FEE4E2; color:#B42318; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.02em; line-height:1.3; text-transform:uppercase; white-space:nowrap; }"
+    },
+    {
+      "name": "Top Navigation",
+      "kind": "nav",
+      "refersTo": "navigation-item-active",
+      "description": "Navegación en píldora sobre papel cálido; ítem activo en tinta.",
+      "html": "<nav class='ds-nav' aria-label='Navegación principal'><button class='ds-nav-item ds-nav-active' aria-current='page'>Tablero</button><button class='ds-nav-item'>Movimientos</button><button class='ds-nav-item'>Reportes</button></nav>",
+      "css": ".ds-nav { display:inline-flex; align-items:center; gap:2px; padding:4px; border:1.5px solid #E3E1D6; border-radius:10px; background:#FAF9F5; } .ds-nav-item { padding:8px 10px; border:1.5px solid transparent; border-radius:7px; background:transparent; color:#354B4A; font-family:'Inter',system-ui,sans-serif; font-size:12.5px; font-weight:600; line-height:1.2; white-space:nowrap; cursor:pointer; } .ds-nav-item:hover { background:#F2EFE4; color:#072C2C; } .ds-nav-active { background:#072C2C; border-color:#072C2C; color:#EDEADE; } .ds-nav-item:focus-visible { outline:2px solid #FF5F03; outline-offset:2px; }"
+    },
+    {
+      "name": "Supply Flow Card",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Firma del sistema: ruta de abastecimiento viva, plana, con el paso en tránsito destacado.",
+      "html": "<article class='ds-flow'><div class='ds-flow-head'><span>flujo · abastecimiento_faena</span><span class='ds-flow-live'><i></i>en vivo</span></div><div class='ds-flow-body'><div class='ds-flow-step'><span class='ds-flow-num'>01</span><div class='ds-flow-info'><strong>Centro de distribución</strong><small>despacho programado</small></div><span class='ds-flow-tag'>origen</span></div><div class='ds-flow-step ds-flow-active'><span class='ds-flow-num'>02</span><div class='ds-flow-info'><strong>Camión en ruta</strong><small>4 en tránsito</small></div><span class='ds-flow-tag ds-flow-tag-hot'>tránsito</span></div><div class='ds-flow-step'><span class='ds-flow-num'>03</span><div class='ds-flow-info'><strong>Pañol de faena</strong><small>35 insumos · 6 críticos</small></div><span class='ds-flow-tag'>stock</span></div><div class='ds-flow-step'><span class='ds-flow-num'>04</span><div class='ds-flow-info'><strong>Consumo de planta</strong><small>cobertura 88,4%</small></div><span class='ds-flow-tag'>demanda</span></div></div><div class='ds-flow-foot'><div><small>próximo reaprovisionamiento</small><strong>Pedido vencido: emitir hoy</strong></div><button class='ds-btn-dark ds-btn-sm'>Ver logística</button></div></article>",
+      "css": ".ds-flow { overflow:hidden; border:2px solid #072C2C; border-radius:16px; background:#FFFFFF; box-shadow:8px 8px 0 0 #072C2C; color:#072C2C; font-family:'Inter',system-ui,sans-serif; } .ds-flow-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 16px; border-bottom:2px solid #072C2C; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; } .ds-flow-live { display:inline-flex; align-items:center; gap:6px; padding:3px 8px; border-radius:999px; background:#EDEADE; font-size:11px; letter-spacing:0; text-transform:none; } .ds-flow-live i { width:6px; height:6px; border-radius:50%; background:#067647; } .ds-flow-body { padding:10px 14px 8px; } .ds-flow-step { display:flex; align-items:center; gap:10px; padding:7px 9px; } .ds-flow-step + .ds-flow-step { position:relative; margin-top:4px; } .ds-flow-step + .ds-flow-step::before { content:''; position:absolute; left:23px; top:-10px; height:10px; border-left:1.5px dashed #D9D7CB; } .ds-flow-active { margin:0 -14px; padding-right:23px; padding-left:23px; background:#FFF3EC; } .ds-flow-num { display:inline-flex; align-items:center; justify-content:center; width:25px; height:25px; flex:0 0 auto; border:1.5px solid #D9D7CB; border-radius:6px; background:#FFFFFF; color:#5C6B6B; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; font-weight:600; } .ds-flow-active .ds-flow-num { border-color:#FF5F03; background:#FFFFFF; color:#B43A00; } .ds-flow-info { flex:1 1 auto; min-width:0; } .ds-flow-info strong { display:block; font-size:12.5px; font-weight:600; line-height:1.25; } .ds-flow-info small { display:block; color:#5C6B6B; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; line-height:1.35; } .ds-flow-tag { flex:0 0 auto; padding:3px 6px; border:1px solid #D9D7CB; border-radius:5px; background:#FFFFFF; color:#5C6B6B; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.04em; line-height:1; text-transform:uppercase; } .ds-flow-tag-hot { border-color:#FF5F03; background:#FF5F03; color:#072C2C; } .ds-flow-foot { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 16px; border-top:2px dashed #D9D7CB; } .ds-flow-foot small { display:block; color:#5C6B6B; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.04em; text-transform:uppercase; } .ds-flow-foot strong { display:block; margin-top:2px; font-size:12.5px; } .ds-btn-dark { display:inline-flex; align-items:center; justify-content:center; min-height:31px; padding:5px 10px; border:1.5px solid #072C2C; border-radius:7px; background:#072C2C; color:#EDEADE; font-family:'Inter',system-ui,sans-serif; font-size:12px; font-weight:600; white-space:nowrap; cursor:pointer; }"
+    },
+    {
+      "name": "Field Photo Plate",
+      "kind": "custom",
+      "refersTo": "field-photo",
+      "description": "Fotografía de la operación como placa de campo: hero con titular en hueso sobre velo fuerte y bandas de página a ancho completo con velo suave y caption mono.",
+      "html": "<figure class='ds-field-photo'><div class='ds-field-photo-plate'><strong>Control de insumos de la faena</strong></div><figcaption>Vista aérea de la faena · imagen de referencia</figcaption></figure>",
+      "css": ".ds-field-photo { width:100%; margin:0; font-family:'Inter',system-ui,sans-serif; } .ds-field-photo-plate { position:relative; display:flex; align-items:flex-end; min-height:180px; overflow:hidden; border:2px solid #072C2C; border-radius:16px; background:#324c49; } .ds-field-photo-plate::before { content:''; position:absolute; inset:0; background:rgba(7,44,44,.62); } .ds-field-photo-plate strong { position:relative; z-index:1; max-width:12ch; padding:24px 22px 26px; color:#EDEADE; font-family:'Space Grotesk',Inter,system-ui,sans-serif; font-size:36px; font-weight:700; line-height:1.02; letter-spacing:-.035em; } .ds-field-photo figcaption { display:flex; align-items:center; gap:7px; margin-top:9px; color:#5C6B6B; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:.04em; line-height:1.4; text-transform:uppercase; } .ds-field-photo figcaption::before { content:''; width:5px; height:5px; flex:0 0 auto; background:#FF5F03; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El parte de faena",
+    "overview": "La interfaz es el parte de turno del pañol, no un dashboard de software. Se apoya en un campo hueso, reglas de tinta y un naranja de señal que marca lo que exige atención. La jerarquía se construye con tipografía, líneas y números; no con sombras difusas ni decoración. Cada pantalla repite la misma gramática operativa: etiqueta, dato, estado y acción.\n\nEl sistema es plano y diagramático. La profundidad aparece como bloques de tinta desplazados, como una estampa sobre papel: el diagrama de abastecimiento, el KPI crítico, los modales y el drawer. El resto descansa sobre el campo. La única textura es la fotografía documental de la operación, siempre enmarcada como una placa de campo. El hero la vela con tinta para sostener el titular; las bandas de Alertas y Logística usan un velo suave. La tabla es densa y ordenable; el detalle abre en contexto; la navegación superior mantiene la acción de carga siempre a mano.\n\nEl modo oscuro es el mismo parte bajo el turno noche: superficies de verde profundo, texto hueso y el mismo naranja de señal. No cambia el vocabulario, solo la luz. La interfaz nunca inventa módulos: la compra es una confirmación local y la logística una simulación derivada de cobertura y lead time.",
+    "keyCharacteristics": [
+      "Campo hueso #EDEADE y superficies blancas, con tinta #072C2C como estructura.",
+      "Naranja #FF5F03 reservado para acción primaria, tránsito y riesgo.",
+      "Etiquetas monoespaciadas en mayúsculas para datos, SKU, fechas y metadatos.",
+      "Bordes de 2px en contenedores y 1.5px en controles.",
+      "Tarjetas de 16px, controles de 8px y chips tipo píldora.",
+      "Sombras duras desplazadas, sin blur, solo en piezas destacadas.",
+      "Diagrama de abastecimiento vivo como firma de la pantalla.",
+      "Fotografías existentes usadas como placas de campo, con marco, velo de tinta y caption mono."
+    ],
+    "rules": [
+      {
+        "name": "The Orange Signal Rule",
+        "body": "El naranja ocupa menos del 10% de una pantalla. Si aparece en todas partes, deja de señalar.",
+        "section": "colors"
+      },
+      {
+        "name": "The Bone Field Rule",
+        "body": "El fondo grande es hueso o papel. No hay gradientes, glass ni fotografías de ambiente compitiendo con los datos. Las fotos entran como placas de campo con marco de 2px, no como fondo de página.",
+        "section": "colors"
+      },
+      {
+        "name": "The Instrument Label Rule",
+        "body": "El monoespaciado se usa para datos, medidas, códigos y metadatos. Nunca para párrafos ni para dar una textura técnica decorativa.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two-Voice Rule",
+        "body": "Space Grotesk e Inter hacen la lectura; el mono hace la medición. No se agrega una tercera familia.",
+        "section": "typography"
+      },
+      {
+        "name": "The Stamped Block Rule",
+        "body": "La sombra dura pertenece a una pieza que se levanta del campo. No se aplica a todas las tarjetas ni a los controles en reposo.",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Halo Rule",
+        "body": "No hay sombras difusas, glows ni halos de color. La profundidad es un desplazamiento, no una nebulosa.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Field Plate Rule",
+        "body": "Una fotografía es evidencia de contexto, no decoración. Se enmarca, se satura hacia la paleta y se acompaña con un caption mono que aclara que es una imagen de referencia.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do mantener el campo hueso y el papel como superficies dominantes; la tinta estructura, el naranja señala.",
+      "Do usar 2px en marcos principales y 1.5px en controles, con radios de 16px y 8px respectivamente.",
+      "Do reservar el mono para datos, códigos, fechas, unidades y etiquetas.",
+      "Do usar sombras duras solo en el diagrama, el KPI crítico, los modales, los toasts y el canto del drawer.",
+      "Do conservar el foco visible, el contraste alto, la navegación por teclado y prefers-reduced-motion.",
+      "Do adaptar la tabla del drawer a filas de tarjeta en móvil para no esconder columnas.",
+      "Do mantener la acción de carga de insumo visible en la barra superior.",
+      "Do usar las fotografías existentes como placas de campo: marco de tinta, saturación contenida y caption de “imagen de referencia”.",
+      "Do velar la foto del hero con tinta plana para que el titular mantenga contraste AA."
+    ],
+    "donts": [
+      "Don't anidar tarjetas dentro de tarjetas. Los pasos del flujo son filas planas, no tarjetas.",
+      "Don't usar gradientes, glass, blur decorativo, texturas ni fotografías como fondo ambiental detrás de datos, tablas o párrafos.",
+      "Don't aplicar sombras difusas o halos; la profundidad es un bloque desplazado.",
+      "Don't extender el naranja a fondos grandes, párrafos o controles secundarios.",
+      "Don't convertir todos los controles en píldoras; la píldora es para chips y badges.",
+      "Don't introducir módulos, métricas o testimonios que el producto no tiene.",
+      "Don't usar emojis o glifos como iconos; el sistema usa SVG de trazo consistente.",
+      "Don't romper el modo oscuro: es una inversión de luz, no una paleta distinta.",
+      "Don't recortar fotos con máscaras geométricas ni convertirlas en siluetas decorativas."
+    ]
+  }
+}

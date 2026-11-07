@@ -19,13 +19,17 @@ html = html.replace(
   () => `<style>\n${css}\n</style>`,
 );
 
-// 2. Chart.js desde cdnjs (permitido en páginas publicadas)
+// 2. Inlinear las fotografías del HTML para que la demo no dependa de public/img/
+html = html.replace(/(<img\b[^>]*\bsrc=")(?:\.\/)?img\/([\w.-]+)(")/g, (_, pre, f, post) =>
+  `${pre}data:image/jpeg;base64,${fs.readFileSync(P('img/' + f)).toString('base64')}${post}`);
+
+// 3. Chart.js desde cdnjs (permitido en páginas publicadas)
 html = html.replace(
   '<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>',
 );
 
-// 3. Reemplazar el cliente REST por el store local e inlinear el resto
+// 4. Reemplazar el cliente REST por el store local e inlinear el resto
 html = html.replace(
   '<script src="./js/api.js"></script>',
   () => `<script>\n${read('js/store-local.js')}\n</script>`,
@@ -47,12 +51,13 @@ html = html.replace(
   () => `<script>\n${read('js/views.js')}\n</script>`,
 );
 
-// 4. Acciones exclusivas de la demo
+// 5. Acciones exclusivas de la demo
 html = html.replace(
-  '<button class="btn btn-primary" id="btnNuevo">Cargar insumo</button>',
-  () => `<button class="btn btn-ghost" id="btnExportar">Exportar base</button>
-    <button class="btn btn-ghost" id="btnReiniciar">Restablecer demo</button>
-    <button class="btn btn-primary" id="btnNuevo">Cargar insumo</button>`,
+  '<div class="demo-actions" id="demoActions"></div>',
+  () => `<div class="demo-actions" id="demoActions">
+      <button class="btn btn-sm" id="btnExportar" type="button">Exportar base</button>
+      <button class="btn btn-sm" id="btnReiniciar" type="button">Restablecer demo</button>
+    </div>`,
 );
 
 html = html.replace('</body>', () => `<script>
